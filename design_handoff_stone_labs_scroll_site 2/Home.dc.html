@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Stone Labs — Creative Digital Studio</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@300,400,500,600&amp;f[]=satoshi@400,500,700&amp;display=swap">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="./stone-data.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+html,body{margin:0;background:#0c0c0c;color:#111;-webkit-font-smoothing:antialiased}
+body{overflow-x:clip}
+*{box-sizing:border-box}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit;opacity:.8}
+::selection{background:#F5F5F2;color:#111}
+:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+</style>
+</helmet>
+
+<a href="#main" style="position:fixed;left:16px;top:-60px;z-index:100;background:#111;color:#F5F5F2;padding:10px 14px;font:500 14px Satoshi,sans-serif" style-focus="top:16px">Skip to content</a>
+
+<header style="position:fixed;top:16px;left:20px;right:20px;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:Satoshi,sans-serif;color:{{ hdrFg }};pointer-events:none;transition:color .5s ease">
+  <a href="#top" onClick="{{ goTop }}" aria-label="Stone Labs — back to top" style="pointer-events:auto;display:flex;align-items:center;gap:10px;height:48px;padding:0 20px 0 12px;border-radius:999px;background:{{ pillBg }};backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);border:1px solid {{ hdrLine }};box-shadow:{{ pillShadow }};transition:background .5s ease,border-color .5s ease">
+    <img src="assets/logo-mark.png" alt="" width="28" height="28" style="display:block;width:28px;height:28px;filter:{{ logoFilter }};transition:filter .5s ease"></img>
+    <span style="font:600 15px/1 Satoshi,sans-serif;letter-spacing:-.01em">Stone Labs</span>
+  </a>
+  <sc-if value="{{ wideNav }}" hint-placeholder-val="{{ true }}">
+    <nav aria-label="Primary" style="pointer-events:auto;display:flex;gap:2px;padding:4px;border-radius:999px;background:{{ pillBg }};backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);border:1px solid {{ hdrLine }};box-shadow:{{ pillShadow }};transition:background .5s ease,border-color .5s ease">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4">
+        <a href="{{ n.href }}" onClick="{{ n.go }}" style="display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:999px;font:500 14px/1 Satoshi,sans-serif;background:{{ n.bg }};transition:background .4s ease" style-hover="opacity:1;background:{{ n.hover }}">{{ n.label }}</a>
+      </sc-for>
+    </nav>
+  </sc-if>
+  <div style="pointer-events:auto;display:flex;align-items:center;gap:8px">
+    <a href="#contact" onClick="{{ goContact }}" style="display:inline-flex;align-items:center;gap:14px;height:48px;padding:0 8px 0 22px;border-radius:999px;background:{{ hdrFg }};color:{{ ctaFg }};font:500 14px/1 Satoshi,sans-serif;box-shadow:{{ pillShadow }};transition:background .5s ease,color .5s ease" style-hover="opacity:1;gap:18px">Start a Project <span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:{{ ctaFg }};color:{{ hdrFg }};font-size:15px;transition:background .5s ease,color .5s ease">→</span></a>
+    <sc-if value="{{ narrowNav }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ toggleMenu }}" aria-expanded="{{ menuOpenStr }}" aria-controls="mnav" style="height:48px;padding:0 18px;border-radius:999px;border:1px solid {{ hdrLine }};background:{{ pillBg }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:inherit;font:500 14px/1 Satoshi,sans-serif;cursor:pointer">{{ menuLabel }}</button>
+    </sc-if>
+  </div>
+</header>
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <nav id="mnav" aria-label="Mobile" style="position:fixed;top:76px;left:20px;right:20px;z-index:59;background:#F5F5F2;border:1px solid rgba(17,17,17,.1);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;font:500 28px/1 'Clash Display',sans-serif;color:#111">
+    <a href="#services" onClick="{{ goServices }}" style="padding:20px;border-bottom:1px solid #e4e0d8">Services</a>
+    <a href="#work" onClick="{{ goWork }}" style="padding:20px;border-bottom:1px solid #e4e0d8">Work</a>
+    <a href="#studio" onClick="{{ goStudio }}" style="padding:20px;border-bottom:1px solid #e4e0d8">Studio</a>
+    <a href="#contact" onClick="{{ goContact }}" style="padding:20px">Contact</a>
+  </nav>
+</sc-if>
+
+<main id="main">
+
+<sc-if value="{{ isCinema }}" hint-placeholder-val="{{ true }}">
+<div data-trav-wrap aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;z-index:45;display:{{ domDisplay }}"><svg style="position:absolute;inset:0;width:100%;height:100%;overflow:visible" preserveAspectRatio="none"><path data-p-full fill="none" stroke="#888" stroke-opacity=".55" stroke-width="1" stroke-dasharray="2 7"></path><path data-p-trail fill="none" stroke="#111" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"></path></svg><svg data-trav viewBox="130 105 985 1055" style="position:absolute;left:0;top:0;width:34vh;height:36.4vh;overflow:visible;will-change:transform"><g data-sg><path data-st1 d="M150 620C150 500 220 420 330 330C480 210 650 125 830 125C980 125 1090 230 1090 355C1090 440 1040 478 930 478C760 485 640 520 520 610C420 690 360 755 260 755C190 755 150 700 150 620Z" style="fill:#111"></path><path data-st2 d="M170 865C165 815 215 797 290 790C450 775 560 720 660 625C750 550 820 520 905 520C1050 520 1095 620 1095 720C1095 850 1030 975 950 1060C870 1130 770 1142 660 1142C510 1142 330 1060 230 985C195 955 172 910 170 865Z" style="fill:#111"></path></g></svg></div>
+<section id="top" ref="{{ stageRef }}" aria-label="Stone Labs" style="position:relative;height:100vh;overflow:hidden;background:#111;font-family:Satoshi,sans-serif">
+  <div data-l="bgLight" style="position:absolute;inset:0;background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #F8F7F4 50%, #EEEBE6 100%)"></div>
+  <div data-l="bgGraph" style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 40%, #222121 0%, #171717 55%, #111 100%);opacity:0"></div>
+  <div data-l="bgBlack" style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 70% 45%, #F1EEE8 0%, #E2DED5 100%);opacity:0"></div>
+
+  <div aria-hidden="true" style="position:absolute;left:0;right:0;top:21vh;perspective:900px;perspective-origin:50% 40%;pointer-events:none">
+    <div data-l="word" style="display:flex;justify-content:center;font-family:'Clash Display',sans-serif;font-weight:300;font-size:15vw;line-height:.8;letter-spacing:-.01em;color:#292929;transform-style:preserve-3d;white-space:nowrap">
+      <span data-ch style="display:inline-block">S</span><span data-ch style="display:inline-block">T</span><span data-ch style="display:inline-block">O</span><span data-ch style="display:inline-block">N</span><span data-ch style="display:inline-block">E</span><span data-ch style="display:inline-block;width:.28em"></span><span data-ch style="display:inline-block">L</span><span data-ch style="display:inline-block">A</span><span data-ch style="display:inline-block">B</span><span data-ch style="display:inline-block">S</span>
+    </div>
+  </div>
+  <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stone Labs — Creative Digital Studio</h1>
+
+  <div aria-hidden="true" style="position:absolute;inset:0;overflow:hidden;pointer-events:none">
+    <div data-gw style="position:absolute;left:0;top:50%;margin-top:-12vw;font:300 24vw/1 'Clash Display',sans-serif;letter-spacing:-.03em;color:#888;white-space:nowrap;opacity:0">SERVICES</div>
+    <div data-gw style="position:absolute;left:0;top:50%;margin-top:-12vw;font:300 24vw/1 'Clash Display',sans-serif;letter-spacing:-.03em;color:#888;white-space:nowrap;opacity:0">WORK</div>
+    <div data-gw style="position:absolute;left:0;top:50%;margin-top:-12vw;font:300 24vw/1 'Clash Display',sans-serif;letter-spacing:-.03em;color:#888;white-space:nowrap;opacity:0">PROCESS</div>
+  </div>
+  <div ref="{{ canvasRef }}" style="position:absolute;inset:0;pointer-events:none">
+  </div>
+
+  <div data-hframes style="position:absolute;inset:0;pointer-events:none"><div data-hf style="position:absolute;left:9vw;top:31vh;width:14vw;transform:rotate(-3deg);pointer-events:auto"><div data-hf-in style="background:#fff;padding:8px 8px 10px;box-shadow:0 1px 2px rgba(17,17,17,.08),0 28px 60px -20px rgba(17,17,17,.38)"><div style="position:relative;aspect-ratio:4/5;background:#e4e0d8"><image-slot id="hero-01" shape="rect" placeholder="Hero frame 01 — drop image"></image-slot></div><div style="display:flex;justify-content:space-between;padding-top:10px;font:500 10px/1 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5f5b55"><span>Fig. 01</span><span>2026</span></div></div></div><div data-hf style="position:absolute;right:9vw;top:37vh;width:12vw;transform:rotate(2.5deg);pointer-events:auto"><div data-hf-in style="background:#fff;padding:8px 8px 10px;box-shadow:0 1px 2px rgba(17,17,17,.08),0 28px 60px -20px rgba(17,17,17,.38)"><div style="position:relative;aspect-ratio:1/1.2;background:#e4e0d8"><image-slot id="hero-02" shape="rect" placeholder="Hero frame 02 — drop image"></image-slot></div><div style="display:flex;justify-content:space-between;padding-top:10px;font:500 10px/1 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5f5b55"><span>Fig. 02</span><span>2026</span></div></div></div><div data-hf style="position:absolute;left:27vw;top:63vh;width:9vw;transform:rotate(4deg);pointer-events:auto"><div data-hf-in style="background:#fff;padding:8px 8px 10px;box-shadow:0 1px 2px rgba(17,17,17,.08),0 28px 60px -20px rgba(17,17,17,.38)"><div style="position:relative;aspect-ratio:1/1;background:#e4e0d8"><image-slot id="hero-03" shape="rect" placeholder="Frame 03"></image-slot></div><div style="display:flex;justify-content:space-between;padding-top:10px;font:500 10px/1 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5f5b55"><span>Fig. 03</span><span>2026</span></div></div></div></div>
+  <div aria-hidden="true" data-rail style="position:absolute;left:2vw;top:30vh;height:40vh;width:1px;mix-blend-mode:difference;pointer-events:none"><span style="position:absolute;inset:0;background:#fff;opacity:.3"></span><span data-rail-fill style="position:absolute;inset:0;background:#fff;transform-origin:top;transform:scaleY(0)"></span></div>
+  <div data-dom style="position:absolute;inset:0;pointer-events:none;display:{{ domDisplay }}"><div data-dring style="position:absolute;left:0;top:0;width:50vh;height:50vh;margin:-25vh 0 0 -25vh;border:1px solid #fff;border-radius:50%;mix-blend-mode:difference;opacity:0;visibility:hidden"><span style="position:absolute;left:50%;top:-5px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#fff"></span></div><div data-card style="position:absolute;left:0;top:0;pointer-events:auto;opacity:0;visibility:hidden"><div style="position:absolute;inset:0;border-radius:50%;overflow:hidden;background:linear-gradient(150deg,#f1eee8 0%,#d9d4ca 100%);box-shadow:inset 0 0 0 1px rgba(17,17,17,.1),0 50px 90px -34px rgba(17,17,17,.6)"><image-slot id="card-01" shape="rect" placeholder="Motion — drop a reel still"></image-slot></div><div style="position:absolute;left:0;top:100%;margin-top:14px;white-space:nowrap;color:#fff;mix-blend-mode:difference;font:500 11px/1 Satoshi,sans-serif;letter-spacing:.16em;text-transform:uppercase">01 — Motion</div></div><div data-card style="position:absolute;left:0;top:0;pointer-events:auto;opacity:0;visibility:hidden"><div style="position:absolute;inset:0;border-radius:10px;overflow:hidden;background:linear-gradient(150deg,#f1eee8 0%,#d9d4ca 100%);box-shadow:inset 0 0 0 1px rgba(17,17,17,.1),0 50px 90px -34px rgba(17,17,17,.6)"><image-slot id="card-02" shape="rect" placeholder="Website — drop a screenshot"></image-slot></div><div style="position:absolute;left:0;top:100%;margin-top:14px;white-space:nowrap;color:#fff;mix-blend-mode:difference;font:500 11px/1 Satoshi,sans-serif;letter-spacing:.16em;text-transform:uppercase">02 — Web</div></div><div data-card style="position:absolute;left:0;top:0;pointer-events:auto;opacity:0;visibility:hidden"><div style="position:absolute;inset:0;border-radius:44px;overflow:hidden;background:linear-gradient(150deg,#f1eee8 0%,#d9d4ca 100%);box-shadow:inset 0 0 0 1px rgba(17,17,17,.1),0 50px 90px -34px rgba(17,17,17,.6)"><image-slot id="card-03" shape="rect" placeholder="App — drop key screens"></image-slot></div><div style="position:absolute;left:0;top:100%;margin-top:14px;white-space:nowrap;color:#fff;mix-blend-mode:difference;font:500 11px/1 Satoshi,sans-serif;letter-spacing:.16em;text-transform:uppercase">03 — Apps</div></div><div data-card style="position:absolute;left:0;top:0;pointer-events:auto;opacity:0;visibility:hidden"><div style="position:absolute;inset:0;border-radius:999px 999px 10px 10px;overflow:hidden;background:linear-gradient(150deg,#f1eee8 0%,#d9d4ca 100%);box-shadow:inset 0 0 0 1px rgba(17,17,17,.1),0 50px 90px -34px rgba(17,17,17,.6)"><image-slot id="card-04" shape="rect" placeholder="Architecture — drop a render"></image-slot></div><div style="position:absolute;left:0;top:100%;margin-top:14px;white-space:nowrap;color:#fff;mix-blend-mode:difference;font:500 11px/1 Satoshi,sans-serif;letter-spacing:.16em;text-transform:uppercase">04 — 3D Viz</div></div></div>
+  <div data-l="heroUI" style="position:absolute;inset:0;pointer-events:none">
+    <div data-hero-l style="position:absolute;left:4vw;top:15vh;color:#111">
+      <div data-hero-in style="display:flex;flex-direction:column;gap:6px;font:500 12px/1.3 Satoshi,sans-serif;letter-spacing:.12em;text-transform:uppercase"><span>Creative</span><span>Digital Studio</span></div>
+    </div>
+    <div data-hero-r style="position:absolute;right:4vw;top:15vh;color:#111;text-align:right">
+      <div data-hero-in style="display:flex;flex-direction:column;gap:6px;font:500 12px/1.3 Satoshi,sans-serif;letter-spacing:.12em;text-transform:uppercase"><span>Motion · Web · Apps</span><span>3D Visualization</span></div>
+    </div>
+    <div data-hero-l style="position:absolute;left:4vw;bottom:7vh;max-width:24ch;color:#292929">
+      <p data-hero-in style="margin:0;font:400 14px/1.5 Satoshi,sans-serif;text-wrap:pretty">A studio for motion graphics, websites, mobile apps and 3D visualization.</p>
+    </div>
+    <div data-hero-c style="position:absolute;left:50%;bottom:6vh;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:22px;width:max-content;max-width:92vw">
+      <p data-hero-in style="margin:0;font:500 clamp(22px,2.1vw,34px)/1.05 'Clash Display',sans-serif;letter-spacing:-.01em;text-align:center;color:#111">Digital experiences.<br>Designed to move.</p>
+      <div data-hero-in style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;pointer-events:auto">
+        <a href="#work" onClick="{{ goWork }}" style="display:inline-flex;align-items:center;height:46px;padding:0 22px;background:#111;color:#F5F5F2;font:500 14px/1 Satoshi,sans-serif;border-radius:2px" style-hover="background:#292929;opacity:1">Explore Our Work</a>
+        <a href="#contact" onClick="{{ goContact }}" style="display:inline-flex;align-items:center;height:46px;padding:0 22px;border:1px solid #111;color:#111;font:500 14px/1 Satoshi,sans-serif;border-radius:2px" style-hover="background:#111;color:#F5F5F2;opacity:1">Start a Project</a>
+      </div>
+    </div>
+    <div data-hero-r style="position:absolute;right:4vw;bottom:7vh;color:#111;display:flex;align-items:center;gap:14px">
+      <span style="font:500 12px/1 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase">Scroll</span>
+      <span style="position:relative;display:block;width:1px;height:46px;background:rgba(17,17,17,.2);overflow:hidden"><span data-cue style="position:absolute;left:0;top:0;width:1px;height:16px;background:#111"></span></span>
+    </div>
+  </div>
+
+  <div data-p="svc" id="services" style="position:absolute;left:6vw;bottom:8vh;width:min(560px,88vw);color:#111;visibility:hidden;display:flex;flex-direction:column;gap:20px">
+    <h2 data-wipe style="margin:0;display:flex;gap:14px;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#4a4743"><span>(01)</span><span>Services</span></h2>
+    <div style="display:grid">
+      <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+        <h3 data-svc-t style="grid-area:1/1;align-self:end;margin:0;font:500 clamp(38px,4.6vw,84px)/.94 'Clash Display',sans-serif;letter-spacing:-.02em;text-wrap:balance">{{ s.name }}</h3>
+      </sc-for>
+    </div>
+    <div style="display:grid">
+      <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+        <div data-svc-d style="grid-area:1/1;display:flex;flex-direction:column;gap:8px">
+          <p style="margin:0;max-width:40ch;font:400 15px/1.55 Satoshi,sans-serif;color:#4a4743;text-wrap:pretty">{{ s.text }}</p>
+          <span style="font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a857d">{{ s.tags }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <ol data-wipe aria-label="Services index" style="margin:6px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+      <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+        <li style="display:flex;flex-direction:column;gap:10px">
+          <span style="position:relative;display:block;height:1px;background:rgba(17,17,17,.14)"><span data-svc-seg style="position:absolute;inset:0;background:#111;transform-origin:left;transform:scaleX(0)"></span></span>
+          <span data-svc-n style="font:500 12px/1.3 Satoshi,sans-serif;letter-spacing:.04em;color:#8a857d">{{ s.no }} {{ s.short }}</span>
+        </li>
+      </sc-for>
+    </ol>
+  </div>
+
+  <div data-p="work" id="work" style="position:absolute;right:6vw;bottom:8vh;width:min(410px,88vw);color:#F5F5F2;visibility:hidden;display:flex;flex-direction:column;gap:26px">
+    <div data-wipe style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:14px;border-bottom:1px solid rgba(191,195,199,.28);font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#BFC3C7">
+      <h2 style="margin:0;font:inherit;display:flex;gap:14px"><span>(02)</span><span>Selected Work</span></h2>
+      <span style="display:flex;gap:6px;color:#F5F5F2"><span style="display:block;height:1.2em;overflow:hidden"><span data-counter style="display:flex;flex-direction:column"><span style="height:1.2em">01</span><span style="height:1.2em">02</span><span style="height:1.2em">03</span><span style="height:1.2em">04</span></span></span><span style="color:#BFC3C7">/ 04</span></span>
+    </div>
+    <div style="display:grid">
+      <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
+        <article data-proj style="grid-area:1/1;align-self:end;display:flex;flex-direction:column;align-items:flex-start;gap:16px;visibility:hidden">
+          <div data-pl style="font:500 12px/1.3 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#BFC3C7">{{ p.serviceLabel }} · {{ p.year }}</div>
+          <h3 data-pl style="margin:0;font:500 clamp(32px,3.4vw,60px)/.96 'Clash Display',sans-serif;letter-spacing:-.015em;text-wrap:balance">{{ p.title }}</h3>
+          <p data-pl style="margin:0;font:400 15px/1.55 Satoshi,sans-serif;color:#BFC3C7;max-width:38ch;text-wrap:pretty">{{ p.summary }}</p>
+          <div data-pl style="font:500 13px/1.4 Satoshi,sans-serif;color:#F5F5F2">{{ p.roleText }}</div>
+          <sc-if value="{{ p.hasLink }}" hint-placeholder-val="{{ false }}">
+            <a data-pl href="{{ p.url }}" style="display:inline-flex;align-items:center;gap:12px;font:500 14px/1 Satoshi,sans-serif;padding:8px 0 6px;border-bottom:1px solid #F5F5F2">View project <span aria-hidden="true">→</span></a>
+          </sc-if>
+        </article>
+      </sc-for>
+    </div>
+    <div data-wipe style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+      <span style="display:block;height:1px;background:rgba(191,195,199,.25)"><span data-wseg style="display:block;height:1px;background:#F5F5F2;transform-origin:left;transform:scaleX(0)"></span></span>
+      <span style="display:block;height:1px;background:rgba(191,195,199,.25)"><span data-wseg style="display:block;height:1px;background:#F5F5F2;transform-origin:left;transform:scaleX(0)"></span></span>
+      <span style="display:block;height:1px;background:rgba(191,195,199,.25)"><span data-wseg style="display:block;height:1px;background:#F5F5F2;transform-origin:left;transform:scaleX(0)"></span></span>
+      <span style="display:block;height:1px;background:rgba(191,195,199,.25)"><span data-wseg style="display:block;height:1px;background:#F5F5F2;transform-origin:left;transform:scaleX(0)"></span></span>
+    </div>
+  </div>
+
+  <div data-p="proc" id="studio" style="position:absolute;right:6vw;bottom:8vh;width:min(430px,88vw);color:#111;visibility:hidden;display:flex;flex-direction:column;gap:22px">
+    <h2 data-wipe style="margin:0;display:flex;gap:14px;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#4a4743"><span>(03)</span><span>Studio &amp; Process</span></h2>
+    <p data-wipe style="margin:0;font:400 clamp(17px,1.35vw,21px)/1.4 Satoshi,sans-serif;color:#4a4743;text-wrap:pretty">An independent studio for motion, interfaces and space. Every project moves from first sketch to final build in one set of hands.</p>
+    <div style="display:grid;padding-top:10px;border-top:1px solid rgba(17,17,17,.2)">
+      <sc-for list="{{ process }}" as="st" hint-placeholder-count="4">
+        <div data-stage style="grid-area:1/1;display:flex;flex-direction:column;gap:12px;padding-top:12px">
+          <div data-sl style="display:flex;gap:18px;align-items:baseline">
+            <span style="font:500 13px/1 Satoshi,sans-serif;color:#4a4743">{{ st.no }}</span>
+            <h3 style="margin:0;font:500 clamp(40px,4.2vw,76px)/.95 'Clash Display',sans-serif;letter-spacing:-.02em">{{ st.name }}</h3>
+          </div>
+          <p data-sl style="margin:0;font:400 15px/1.55 Satoshi,sans-serif;color:#4a4743;max-width:38ch;text-wrap:pretty">{{ st.text }}</p>
+        </div>
+      </sc-for>
+    </div>
+    <ol data-wipe aria-label="Process steps" style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 18px;font:500 12px/1.3 Satoshi,sans-serif;letter-spacing:.1em;text-transform:uppercase">
+      <sc-for list="{{ process }}" as="st" hint-placeholder-count="4">
+        <li data-stn style="color:#8a857d">{{ st.name }}</li>
+      </sc-for>
+    </ol>
+  </div>
+
+  <div data-p="contact" id="contact" style="position:absolute;left:6vw;bottom:9vh;width:min(760px,88vw);color:#111;visibility:hidden;display:flex;flex-direction:column;gap:30px">
+    <h2 data-wipe style="margin:0;display:flex;gap:14px;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#4a4743"><span>(04)</span><span>Contact</span></h2>
+    <p style="margin:0;font:500 clamp(46px,6.6vw,124px)/.93 'Clash Display',sans-serif;letter-spacing:-.025em">
+      <span data-cl style="display:block">Let’s build</span>
+      <span data-cl style="display:block">something</span>
+      <span data-cl style="display:block">worth seeing.</span>
+    </p>
+    <div data-wipe style="display:flex;flex-wrap:wrap;align-items:center;gap:18px 28px">
+      <a href="{{ mailto }}" style="display:inline-flex;align-items:center;gap:14px;height:56px;padding:0 26px;background:#111;color:#F5F5F2;font:500 16px/1 Satoshi,sans-serif;border-radius:2px" style-hover="background:#4a4743;opacity:1">Start a Project <span aria-hidden="true">→</span></a>
+      <a href="{{ mailto }}" style="font:500 clamp(17px,1.5vw,22px)/1.2 Satoshi,sans-serif;border-bottom:1px solid rgba(17,17,17,.4);padding-bottom:4px">{{ email }}</a>
+    </div>
+    <ul data-wipe aria-label="Social" style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:10px 26px;font:500 14px/1 Satoshi,sans-serif;color:#4a4743">
+      <sc-for list="{{ socials }}" as="so" hint-placeholder-count="4">
+        <li><a href="{{ so.href }}" style="display:inline-block;padding:8px 0">{{ so.label }}</a></li>
+      </sc-for>
+    </ul>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isFlow }}" hint-placeholder-val="{{ false }}">
+<section id="top" style="position:relative;height:100svh;min-height:560px;overflow:hidden;background:radial-gradient(ellipse 60% 60% at 50% 50%, #FFFFFF 0%, #F5F3EF 60%, #E9E5DE 100%);font-family:Satoshi,sans-serif">
+  <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stone Labs — Creative Digital Studio</h1>
+  <sc-if value="{{ showMotionPrompt }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;left:50%;top:92px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:14px;padding:8px 8px 8px 16px;background:#111;color:#F5F5F2;border-radius:2px;font:500 13px/1.2 Satoshi,sans-serif;width:max-content;max-width:92vw">
+      <span>Animations are reduced by your system settings.</span>
+      <button type="button" onClick="{{ enableMotion }}" style="height:34px;padding:0 14px;border:0;background:#F5F5F2;color:#111;font:500 13px/1 Satoshi,sans-serif;border-radius:2px;cursor:pointer">Play animations</button>
+    </div>
+  </sc-if>
+  <div aria-hidden="true" style="position:absolute;left:0;right:0;top:20svh;text-align:center;font:300 clamp(72px,15vw,260px)/.82 'Clash Display',sans-serif;letter-spacing:-.01em;color:#292929">STONE LABS</div>
+  <div ref="{{ flowCanvasRef }}" style="position:absolute;inset:0;pointer-events:none">
+    <sc-if value="{{ noWebgl }}" hint-placeholder-val="{{ false }}">
+      <img src="assets/logo-mark.png" alt="" style="position:absolute;left:50%;top:52%;width:min(34vh,60vw);aspect-ratio:1;transform:translate(-50%,-50%)"></img>
+    </sc-if>
+  </div>
+  <div style="position:absolute;left:20px;right:20px;bottom:6vh;display:flex;flex-direction:column;align-items:center;gap:18px">
+    <p style="margin:0;font:500 clamp(24px,2.2vw,34px)/1.05 'Clash Display',sans-serif;text-align:center;color:#111">Digital experiences.<br>Designed to move.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px">
+      <a href="#work" onClick="{{ goWork }}" style="display:inline-flex;align-items:center;height:48px;padding:0 20px;background:#111;color:#F5F5F2;font:500 15px/1 Satoshi,sans-serif;border-radius:2px">Explore Our Work</a>
+      <a href="#contact" onClick="{{ goContact }}" style="display:inline-flex;align-items:center;height:48px;padding:0 20px;border:1px solid #111;color:#111;font:500 15px/1 Satoshi,sans-serif;border-radius:2px">Start a Project</a>
+    </div>
+  </div>
+</section>
+<section id="services" aria-labelledby="f-svc" style="background:#151515;color:#F5F5F2;padding:96px 6vw;font-family:Satoshi,sans-serif">
+  <h2 id="f-svc" style="margin:0 0 36px;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#BFC3C7">(01) Services</h2>
+  <ul style="margin:0;padding:0;list-style:none;border-bottom:1px solid rgba(191,195,199,.28)">
+    <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+      <li style="display:grid;grid-template-columns:48px minmax(0,1fr);gap:8px 16px;padding:26px 0;border-top:1px solid rgba(191,195,199,.28)">
+        <span style="font:500 13px/1.6 Satoshi,sans-serif;color:#BFC3C7">{{ s.no }}</span>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <h3 style="margin:0;font:500 clamp(28px,4vw,56px)/1 'Clash Display',sans-serif;letter-spacing:-.015em">{{ s.name }}</h3>
+          <p style="margin:0;max-width:52ch;font:400 15px/1.55 Satoshi,sans-serif;color:#BFC3C7">{{ s.text }}</p>
+        </div>
+      </li>
+    </sc-for>
+  </ul>
+</section>
+<section id="work" aria-labelledby="f-work" style="background:#151515;color:#F5F5F2;padding:40px 6vw 96px;font-family:Satoshi,sans-serif">
+  <h2 id="f-work" style="margin:0 0 36px;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#BFC3C7">(02) Selected Work</h2>
+  <div style="display:flex;flex-direction:column;gap:72px">
+    <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
+      <article style="display:flex;flex-wrap:wrap;gap:24px 4vw;align-items:flex-end">
+        <div style="flex:1 1 520px;position:relative;aspect-ratio:16/10;background:#1d1d1d"><image-slot id="{{ p.slot }}" shape="rect" placeholder="{{ p.slotLabel }}"></image-slot></div>
+        <div style="flex:1 1 280px;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:440px">
+          <div style="font:500 12px/1.3 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#BFC3C7">{{ p.serviceLabel }} · {{ p.year }}</div>
+          <h3 style="margin:0;font:500 clamp(30px,4vw,52px)/.98 'Clash Display',sans-serif;letter-spacing:-.015em">{{ p.title }}</h3>
+          <p style="margin:0;font:400 15px/1.55 Satoshi,sans-serif;color:#BFC3C7">{{ p.summary }}</p>
+          <sc-if value="{{ p.hasLink }}" hint-placeholder-val="{{ false }}"><a href="{{ p.url }}" style="font:500 15px/1 Satoshi,sans-serif;padding:10px 0 6px;border-bottom:1px solid #F5F5F2">View project →</a></sc-if>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</section>
+<section id="studio" aria-labelledby="f-studio" style="background:#151515;color:#F5F5F2;padding:40px 6vw 96px;font-family:Satoshi,sans-serif">
+  <h2 id="f-studio" style="margin:0 0 24px;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#BFC3C7">(03) Studio &amp; Process</h2>
+  <p style="margin:0 0 40px;max-width:30ch;font:400 clamp(22px,2.4vw,36px)/1.2 'Clash Display',sans-serif">An independent studio for motion, interfaces and space. Every project moves from first sketch to final build in one set of hands.</p>
+  <ol style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px 4vw">
+    <sc-for list="{{ process }}" as="st" hint-placeholder-count="4">
+      <li style="display:flex;flex-direction:column;gap:10px;padding-top:18px;border-top:1px solid rgba(191,195,199,.28)">
+        <span style="font:500 13px/1 Satoshi,sans-serif;color:#BFC3C7">{{ st.no }}</span>
+        <h3 style="margin:0;font:500 32px/1 'Clash Display',sans-serif">{{ st.name }}</h3>
+        <p style="margin:0;font:400 15px/1.55 Satoshi,sans-serif;color:#BFC3C7">{{ st.text }}</p>
+      </li>
+    </sc-for>
+  </ol>
+</section>
+<section id="contact" aria-labelledby="f-contact" style="background:#0c0c0c;color:#F5F5F2;padding:96px 6vw;font-family:Satoshi,sans-serif;display:flex;flex-wrap:wrap;gap:40px 6vw;align-items:flex-end;justify-content:space-between">
+  <div style="display:flex;flex-direction:column;gap:28px;max-width:760px">
+    <h2 id="f-contact" style="margin:0;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#BFC3C7">(04) Contact</h2>
+    <p style="margin:0;font:500 clamp(44px,6.6vw,120px)/.93 'Clash Display',sans-serif;letter-spacing:-.025em">Let’s build something worth seeing.</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px 28px">
+      <a href="{{ mailto }}" style="display:inline-flex;align-items:center;gap:14px;height:56px;padding:0 26px;background:#F5F5F2;color:#111;font:500 16px/1 Satoshi,sans-serif;border-radius:2px">Start a Project →</a>
+      <a href="{{ mailto }}" style="font:500 20px/1.2 Satoshi,sans-serif;border-bottom:1px solid rgba(245,245,242,.4);padding-bottom:4px">{{ email }}</a>
+    </div>
+  </div>
+  <img src="assets/logo-mark.png" alt="" style="width:min(220px,40vw);aspect-ratio:1;filter:invert(1);opacity:.9"></img>
+</section>
+</sc-if>
+
+</main>
+
+<footer ref="{{ footerRef }}" style="position:relative;background:#F5F5F2;color:#111;overflow:hidden;font-family:Satoshi,sans-serif">
+  <div aria-hidden="true" style="overflow:hidden;border-top:1px solid rgba(17,17,17,.14);padding:22px 0"><div data-msk><div data-m1 style="display:inline-flex;white-space:nowrap;font:300 clamp(40px,6.4vw,104px)/1 'Clash Display',sans-serif;letter-spacing:-.02em"><span style="display:inline-flex;align-items:center"><span>Motion</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span style="color:transparent;-webkit-text-stroke:1px #111">Web</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span>Apps</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span style="color:transparent;-webkit-text-stroke:1px #111">3D Visualization</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span></span><span style="display:inline-flex;align-items:center"><span>Motion</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span style="color:transparent;-webkit-text-stroke:1px #111">Web</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span>Apps</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span style="color:transparent;-webkit-text-stroke:1px #111">3D Visualization</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span></span><span style="display:inline-flex;align-items:center"><span>Motion</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span style="color:transparent;-webkit-text-stroke:1px #111">Web</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span>Apps</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span style="color:transparent;-webkit-text-stroke:1px #111">3D Visualization</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span></span><span style="display:inline-flex;align-items:center"><span>Motion</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span style="color:transparent;-webkit-text-stroke:1px #111">Web</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span>Apps</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span><span style="color:transparent;-webkit-text-stroke:1px #111">3D Visualization</span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8a857d;margin:0 .5em .12em"></span></span></div></div></div>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:40px 6vw;padding:12vh 6vw 10vh">
+    <div style="display:flex;flex-direction:column;gap:28px">
+      <div data-fcol style="font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#4a4743">(05) Say hello</div>
+      <p style="margin:0;font:500 clamp(44px,7.2vw,132px)/.94 'Clash Display',sans-serif;letter-spacing:-.03em"><span style="display:block;overflow:hidden;padding-bottom:.08em"><span data-fh style="display:block">Let’s make</span></span><span style="display:block;overflow:hidden;padding-bottom:.08em"><span data-fh style="display:block;color:#4a4743">something move.</span></span></p>
+    </div>
+    <a data-badge href="{{ mailto }}" aria-label="Start a project — email us" style="position:relative;display:block;flex:none;width:clamp(150px,14vw,230px);aspect-ratio:1;border-radius:50%;background:#111;color:#F5F5F2"><svg data-bring viewBox="0 0 200 200" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%"><defs><path id="fcirc" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"></path></defs><text fill="#F5F5F2" font-family="Satoshi, sans-serif" font-weight="500" font-size="15" letter-spacing="2"><textPath href="#fcirc" textLength="470" lengthAdjust="spacing">START A PROJECT • START A PROJECT • START A PROJECT • </textPath></text></svg><span aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 clamp(36px,3.4vw,56px)/1 Satoshi,sans-serif">↗</span></a>
+  </div>
+  <span data-frule aria-hidden="true" style="display:block;height:1px;margin:0 6vw;background:rgba(17,17,17,.22);transform-origin:left"></span>
+  <div style="display:flex;flex-wrap:wrap;gap:44px 5vw;padding:7vh 6vw 9vh">
+    <div data-fcol style="flex:2 1 300px;display:flex;flex-direction:column;gap:18px;align-items:flex-start">
+      <div style="font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:10px">Email</div>
+      <a href="{{ mailto }}" style="font:500 clamp(20px,2vw,32px)/1.1 'Clash Display',sans-serif;border-bottom:1px solid rgba(17,17,17,.4);padding-bottom:6px">{{ email }}</a>
+      <p style="margin:0;max-width:34ch;font:400 15px/1.55 Satoshi,sans-serif;color:#4a4743">Motion graphics, websites, mobile apps and 3D visualization — designed and built in one studio.</p>
+    </div>
+    <nav data-fcol aria-label="Footer" style="flex:1 1 140px;display:flex;flex-direction:column;gap:8px"><div style="font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:10px">Navigate</div><sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4"><a href="{{ n.href }}" onClick="{{ n.go }}" style="display:inline-block;padding:6px 0;border-bottom:1px solid transparent;font:500 16px/1.3 Satoshi,sans-serif;color:#111;transition:border-color .3s" style-hover="border-bottom-color:#111;opacity:1">{{ n.label }}</a></sc-for></nav>
+    <div data-fcol style="flex:1 1 140px;display:flex;flex-direction:column;gap:8px"><div style="font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:10px">Services</div><sc-for list="{{ services }}" as="sv" hint-placeholder-count="4"><span style="padding:6px 0;font:400 16px/1.3 Satoshi,sans-serif;color:#4a4743">{{ sv.name }}</span></sc-for></div>
+    <div data-fcol style="flex:1 1 140px;display:flex;flex-direction:column;gap:8px"><div style="font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:10px">Elsewhere</div><sc-for list="{{ socials }}" as="so" hint-placeholder-count="4"><a href="{{ so.href }}" style="display:inline-block;padding:6px 0;border-bottom:1px solid transparent;font:500 16px/1.3 Satoshi,sans-serif;color:#111;transition:border-color .3s" style-hover="border-bottom-color:#111;opacity:1">{{ so.label }} ↗</a></sc-for></div>
+  </div>
+  <div aria-hidden="true" style="overflow:hidden;background:#E4E0D8;color:#111;padding:14px 0;border-top:1px solid rgba(17,17,17,.1)"><div data-m2 style="display:inline-flex;white-space:nowrap;font:500 clamp(13px,1.1vw,16px)/1 Satoshi,sans-serif;letter-spacing:.2em;text-transform:uppercase"><span style="display:inline-flex;align-items:center">Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span></span><span style="display:inline-flex;align-items:center">Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Let’s talk<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Say hello<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span>Start a project<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin:0 28px 2px"></span></span></div></div>
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:3vw;padding:6vh 6vw 3vh">
+    <div aria-hidden="true" data-word style="display:flex;min-width:0;overflow:hidden;padding-bottom:.1em;font:500 12vw/.82 'Clash Display',sans-serif;letter-spacing:-.04em;white-space:nowrap"><span data-fl style="display:inline-block">S</span><span data-fl style="display:inline-block">T</span><span data-fl style="display:inline-block">O</span><span data-fl style="display:inline-block">N</span><span data-fl style="display:inline-block;margin-right:.2em">E</span><span data-fl style="display:inline-block">L</span><span data-fl style="display:inline-block">A</span><span data-fl style="display:inline-block">B</span><span data-fl style="display:inline-block">S</span></div>
+    <div aria-hidden="true" style="position:relative;flex:none;width:clamp(80px,9vw,150px);aspect-ratio:1;margin-bottom:1.5vw"><span data-fring style="position:absolute;inset:0;border:1px solid rgba(17,17,17,.4);border-radius:50%"></span><span data-forbit style="position:absolute;inset:0"><span style="position:absolute;left:50%;top:-5px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#111"></span></span><svg data-fimg viewBox="130 105 985 1055" style="position:absolute;left:25%;top:22.5%;width:50%;aspect-ratio:985/1055"><path d="M150 620C150 500 220 420 330 330C480 210 650 125 830 125C980 125 1090 230 1090 355C1090 440 1040 478 930 478C760 485 640 520 520 610C420 690 360 755 260 755C190 755 150 700 150 620Z" style="fill:#111"></path><path d="M170 865C165 815 215 797 290 790C450 775 560 720 660 625C750 550 820 520 905 520C1050 520 1095 620 1095 720C1095 850 1030 975 950 1060C870 1130 770 1142 660 1142C510 1142 330 1060 230 985C195 955 172 910 170 865Z" style="fill:#8a857d"></path></svg></div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:20px 6vw 28px;border-top:1px solid rgba(17,17,17,.14);font:400 13px/1.4 Satoshi,sans-serif;color:#4a4743">
+    <span>© 2026 Stone Labs — Creative Digital Studio</span>
+    <sc-if value="{{ emailPlaceholder }}" hint-placeholder-val="{{ false }}"><span style="font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#8a857d">Placeholder email and projects — edit stone-data.js</span></sc-if>
+    <sc-if value="{{ glErr }}" hint-placeholder-val="{{ false }}"><span style="font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#8a857d">3D unavailable: {{ glErr }}</span></sc-if>
+    <a href="#top" onClick="{{ goTop }}">Back to top ↑</a>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;full&quot;,&quot;reduced&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;'auto'|'full'|'reduced'&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;pace&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.15,&quot;max&quot;:0.8,&quot;step&quot;:0.05,&quot;default&quot;:0.26,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;smooth&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+class Component extends DCLogic {
+  footerRef = React.createRef(); stageRef = React.createRef(); canvasRef = React.createRef(); flowCanvasRef = React.createRef();
+  TOTAL = 35.5;
+  labels = { top: 0, services: 3.9, work: 12.0, studio: 25.6, contact: 33.6 };
+  state = Object.assign({ menu: false, dark: false, chap: -1, ready: !!window.STONE }, this.computeMode());
+
+  glOK() {
+    if (this._gl != null) return this._gl;
+    try { const c = document.createElement('canvas'); this._gl = !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { this._gl = false; }
+    return this._gl;
+  }
+  computeMode() {
+    const osReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = this.props.motion === 'reduced' || (osReduced && !this._forceMotion && this.props.motion !== 'full');
+    const w = window.innerWidth, h = window.innerHeight, gl = this.glOK();
+    const mobile = w < 820 || (w < h && w < 1000);
+    return { reduced, osReduced, mobile, narrow: w < 760, webgl: gl, mode: !reduced && h >= 380 ? 'cinema' : 'flow' };
+  }
+
+  componentDidMount() {
+    this._onResize = () => {
+      clearTimeout(this._rt);
+      this._rt = setTimeout(() => this.recheck(), 220);
+    };
+    window.addEventListener('resize', this._onResize);
+    let first = true;
+    this._vro = new ResizeObserver(() => { if (first) { first = false; return; } this._onResize(); });
+    this._vro.observe(document.documentElement);
+    this.boot();
+    this._mt = setTimeout(() => this.recheck(), 320);
+  }
+  recheck() {
+    const m = this.computeMode();
+    if (m.mode !== this.state.mode || m.mobile !== this.state.mobile) this.rebuild(m);
+    else if (m.narrow !== this.state.narrow) this.setState({ narrow: m.narrow });
+  }
+  rebuild(m) {
+    this.teardown();
+    this.setState(m || this.computeMode(), () => this.boot());
+  }
+  componentDidUpdate(prev) {
+    if (prev.motion !== this.props.motion || prev.pace !== this.props.pace || prev.smooth !== this.props.smooth) this.rebuild();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize); this._vro && this._vro.disconnect();
+    clearTimeout(this._rt); clearTimeout(this._mt); this._gen = (this._gen || 0) + 1; this.teardown();
+  }
+
+  boot() {
+    clearTimeout(this._bt);
+    const gen = (this._gen = (this._gen || 0) + 1);
+    let tries = 0;
+    const go = () => {
+      if (gen !== this._gen) return;
+      if (window.gsap && window.ScrollTrigger && window.STONE) {
+        this.setState({ ready: true }, () => { if (gen !== this._gen) return; this.teardown(); this.setup(); });
+        return;
+      }
+      if (tries++ < 150) this._bt = setTimeout(go, 60);
+    };
+    go();
+  }
+  teardown() {
+    clearTimeout(this._bt);
+    if (this.ctx) { this.ctx.revert(); this.ctx = null; }
+    if (this._tick) { window.gsap.ticker.remove(this._tick); this._tick = null; }
+    if (this.lenis) { this.lenis.destroy(); this.lenis = null; }
+    if (this._io) { this._io.disconnect(); this._io = null; }
+    if (this.world) { this.world.dispose(); this.world = null; }
+    this.stageST = null;
+  }
+
+  setup() {
+    const g = window.gsap, ST = window.ScrollTrigger;
+    g.registerPlugin(ST);
+    const { mode, reduced, mobile } = this.state;
+    this.s3d = {
+      tx: 0, ty: 0, tz: 0, theta: 0, phi: 0, dist: 9, frameX: 0, frameY: 0, intro: reduced ? 1 : 0,
+      rotX: 0.12, rotY: 0, rotZ: 0, scale: mobile ? 0.62 : 0.78, x: 0, y: mobile ? 0.05 : -0.12, z: 0, gap: 0,
+      spread: 0, rockLift: 0, shadow: 1, stageY: -5.5, turn: -1, disc: 1, spot: 0, rise0: 0, rise1: 0, rise2: 0, rise3: 0,
+      rimDY: 0, rimZ: 0, rimTilt: 0, rimScale: 1, prog: 0, bead: 0, webScroll: 0, appScroll: 0, play: 0
+    };
+    if (mode === 'cinema' && !mobile && this.props.smooth !== false && window.Lenis) {
+      this.lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
+      this.lenis.on('scroll', ST.update);
+      this._tick = (t) => this.lenis && this.lenis.raf(t * 1000);
+      g.ticker.add(this._tick); g.ticker.lagSmoothing(0);
+    }
+    this.ctx = g.context(() => { if (mode === 'cinema') this.buildCinema(g); if (!reduced) this.buildFooter(g); });
+    this.loadWorld();
+    document.fonts && document.fonts.ready.then(() => ST.refresh());
+  }
+
+  loadWorld() {
+    const { mode, reduced, mobile } = this.state;
+    const host = (mode === 'cinema' ? this.canvasRef : this.flowCanvasRef).current;
+    if (!host || !this.state.webgl) return;
+    const gen = this._gen;
+    const urls = [];
+    try { urls.push(new URL('world.js', document.baseURI).href); } catch (e) {}
+    try { urls.push(new URL('world.js', location.href).href); } catch (e) {}
+    urls.push('./world.js');
+    (async () => { let err; for (const u of urls) { try { return await import(u); } catch (e) { err = e; } } throw err; })().then((mod) => {
+      if (!host.isConnected || gen !== this._gen || this.world) return;
+      this.world = mod.createWorld(host, { state: this.s3d, mobile, idle: !reduced, interactive: !reduced && !mobile });
+      if (mode === 'cinema') {
+        window.gsap.to(this.s3d, { intro: 1, duration: 2.4, ease: 'expo.out', delay: 0.1 });
+        this._io = new IntersectionObserver(([e]) => this.world && this.world.setActive(e.isIntersecting), { rootMargin: '80px' });
+        this._io.observe(host);
+      } else {
+        const w = this.world;
+        setTimeout(() => { w.renderOnce(); w.setActive(false); }, 160);
+        document.fonts && document.fonts.ready.then(() => w === this.world && w.renderOnce());
+      }
+    }).catch((e) => { console.warn('3D unavailable', String(e && e.message), e && e.stack); this.setState({ webgl: false, glErr: String((e && e.message) || e).slice(0, 140) }); });
+  }
+
+  buildCinema(g) {
+    const root = this.stageRef.current; if (!root) return;
+    const q = (s) => root.querySelector(s), qa = (s) => Array.from(root.querySelectorAll(s));
+    const s = this.s3d, Mb = this.state.mobile, TOTAL = this.TOTAL;
+    const unit = (this.props.pace ?? 0.26) * (Mb ? 0.85 : 1);
+    const TOP = -0.8, R = 1.5;
+    const A = () => window.innerWidth / window.innerHeight;
+    const fit = (W, H, fw, fh) => () => Math.max(H / (fh * 0.5359), W / (fw * 0.5359 * A()));
+    const FR = (dx, my) => (Mb ? { frameX: 0, frameY: my } : { frameX: dx, frameY: 0 });
+    const V = {
+      svc: fit(4.7, 3.3, Mb ? 0.94 : 0.6, Mb ? 0.46 : 0.8),
+      it: [fit(1.5, 1.2, Mb ? 0.9 : 0.5, Mb ? 0.4 : 0.66), fit(1.26, 0.96, Mb ? 0.9 : 0.52, Mb ? 0.4 : 0.66), fit(0.5, 0.96, Mb ? 0.6 : 0.4, Mb ? 0.42 : 0.74), fit(1.55, 0.9, Mb ? 0.92 : 0.55, Mb ? 0.36 : 0.6)],
+      proc: fit(4.6, 4.2, Mb ? 0.94 : 0.5, Mb ? 0.46 : 0.84),
+      end: fit(2.4, 2.4, Mb ? 0.62 : 0.5, Mb ? 0.34 : 0.55)
+    };
+    const IY = [0.77, 0.42, 0.5, 0.24], IP = [0.06, 0.13, 0.06, 0.36];
+
+    const svcP = q('[data-p="svc"]'), workP = q('[data-p="work"]'), procP = q('[data-p="proc"]'), conP = q('[data-p="contact"]');
+    const svcT = qa('[data-svc-t]'), svcD = qa('[data-svc-d]'), svcSeg = qa('[data-svc-seg]'), svcN = qa('[data-svc-n]');
+    const pw = (p) => Array.from(p.querySelectorAll(':scope > [data-wipe]'));
+    const projs = qa('[data-proj]'), pl = projs.map((a) => Array.from(a.querySelectorAll('[data-pl]'))), wseg = qa('[data-wseg]');
+    const stages = qa('[data-stage]'), sl = stages.map((a) => Array.from(a.querySelectorAll('[data-sl]'))), stn = qa('[data-stn]');
+    const cl = qa('[data-cl]'), letters = qa('[data-ch]');
+
+    const SHOW = 'inset(-10% 0% -10% 0%)', HR = 'inset(-10% 100% -10% 0%)', HL = 'inset(-10% 0% -10% 100%)';
+    const VT = 'inset(100% 0% -10% 0%)', VB = 'inset(-10% 0% 100% 0%)';
+    g.set([...qa('[data-wipe]'), ...svcT, ...svcD, ...pl.flat(), ...cl], { clipPath: HR });
+    g.set(sl.flat(), { clipPath: VT });
+
+    g.from(q('[data-l="word"]'), { letterSpacing: '0.06em', duration: 1.6, ease: 'expo.out' });
+    g.from(qa('[data-hero-in]'), { opacity: 0, y: 14, duration: 0.9, stagger: 0.06, delay: 0.35, ease: 'power3.out' });
+    g.fromTo(q('[data-cue]'), { yPercent: -100 }, { yPercent: 300, duration: 1.6, ease: 'power2.inOut', repeat: -1 });
+
+    const tl = g.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { trigger: root, start: 'top top', end: () => '+=' + Math.round(window.innerHeight * unit * TOTAL), pin: true, scrub: Mb ? 0.6 : 0.9, anticipatePin: 1, invalidateOnRefresh: true }
+    });
+    this.stageST = tl.scrollTrigger;
+    tl.eventCallback('onUpdate', () => {
+      const t = tl.time(), d = (t > SW + 1.2 && t < WP + 0.8) ;
+      const c = t < 2.6 ? -1 : t < SW + 0.6 ? 0 : t < WP + 0.8 ? 1 : t < PC + 0.8 ? 2 : 3;
+      if (this._morph) this._morph(t);
+      if (d !== this.state.dark || c !== this.state.chap) this.setState({ dark: d, chap: c });
+    });
+    const wIn = (els, at, st = 0.07) => tl.fromTo(els, { clipPath: HR, x: 56 }, { clipPath: SHOW, x: 0, duration: 0.6, stagger: st, ease: 'power3.out', immediateRender: false }, at);
+    const wOut = (els, at, st = 0.04) => tl.fromTo(els, { clipPath: SHOW, x: 0 }, { clipPath: HL, x: -56, duration: 0.45, stagger: st, ease: 'power2.in', immediateRender: false }, at);
+    const vIn = (els, at) => tl.fromTo(els, { clipPath: VT, y: -30 }, { clipPath: SHOW, y: 0, duration: 0.55, stagger: 0.06, ease: 'power3.out', immediateRender: false }, at);
+    const vOut = (els, at) => tl.fromTo(els, { clipPath: SHOW, y: 0 }, { clipPath: VB, y: 30, duration: 0.4, stagger: 0.03, ease: 'power2.in', immediateRender: false }, at);
+
+    // HERO — sculpture turns and unlocks, rocks part, type flies through camera
+    tl.to(s, { rotY: Math.PI * 0.95, rotX: -0.22, duration: 1.85, ease: 'power1.inOut' }, 0)
+      .to(s, { gap: 0.34, duration: 0.9, ease: 'sine.out' }, 0.1)
+      .to(s, { gap: 0, duration: 0.8, ease: 'sine.in' }, 1.0)
+      .to(s, { spread: 1.2, rockLift: 0.45, duration: 2.5, ease: 'power2.in' }, 0)
+      .to(s, { spread: 3, duration: 0.7 }, 2.5)
+      .to(s, { dist: 7.3, duration: 2.0, ease: 'power1.inOut' }, 0)
+      .to(letters, { z: (i) => 380 + Math.abs(i - 4.5) * 140, xPercent: (i) => (i - 4.5) * 34, opacity: 0, duration: 1.7, ease: 'power2.in', stagger: { each: 0.035, from: 'center' } }, 0.05)
+      .to(qa('[data-hero-l]'), { x: -80, opacity: 0, duration: 0.7, ease: 'power1.in' }, 0)
+      .to(qa('[data-hero-r]'), { x: 80, opacity: 0, duration: 0.7, ease: 'power1.in' }, 0)
+      .to(q('[data-hero-c]'), { y: 40, opacity: 0, duration: 0.5, ease: 'power1.in' }, 0)
+      .set(q('[data-l="heroUI"]'), { autoAlpha: 0 }, 0.75);
+
+    // HERO → SERVICES — the mark completes its turn and lifts into an emblem; the turntable spins up beneath it
+    tl.to(s, { rotY: Math.PI * 2, rotX: 0.04, scale: 0.28, y: 0.65, duration: 1.7, ease: 'power2.inOut' }, 1.85)
+      .to(s, { shadow: 0, duration: 0.6 }, 1.7)
+      .to(s, { dist: V.svc, phi: 0.34, ty: -0.25, duration: 1.9, ease: 'power2.inOut' }, 2.0)
+      .to(s, { ...FR(0.16, 0.13), duration: 1.9, ease: 'power2.inOut' }, 2.0)
+      .fromTo(s, { stageY: -5.5, turn: -1 }, { stageY: TOP, turn: 0, duration: 1.8, ease: 'power3.out', immediateRender: false }, 2.0)
+      .to(s, { spot: 1, duration: 1.2 }, 2.3)
+      .to(s, { play: 1, duration: 0.3 }, 2.8);
+    [0, 1, 2, 3].forEach((k) => tl.to(s, { ['rise' + k]: 1, duration: 0.8, ease: 'power3.out' }, 2.9 + k * 0.1));
+    tl.set(svcP, { autoAlpha: 1 }, 3.0);
+    wIn(pw(svcP), 3.1, 0.12); wIn(svcT[0], 3.3); wIn(svcD[0], 3.5);
+    tl.to(svcSeg[0], { scaleX: 1, duration: 0.6 }, 3.4).to(svcN[0], { color: '#111', duration: 0.3 }, 3.4);
+
+    // SERVICES — quarter turns; titles travel in the direction of rotation
+    const SV = [3.9, 5.5, 7.1, 8.7];
+    for (let k = 1; k < 4; k++) {
+      const at = SV[k] - 0.7;
+      tl.to(s, { turn: k, duration: 0.8, ease: 'power2.inOut' }, at);
+      wOut(svcT[k - 1], at); wOut(svcD[k - 1], at + 0.02);
+      wIn(svcT[k], at + 0.35); wIn(svcD[k], at + 0.45);
+      tl.to(svcSeg[k], { scaleX: 1, duration: 0.8 }, at)
+        .to(svcN[k], { color: '#111', duration: 0.3 }, at + 0.3)
+        .to(svcN[k - 1], { color: '#8a857d', duration: 0.3 }, at + 0.3);
+    }
+
+    // SERVICES → WORK — the turntable completes its revolution as the camera moves in on the motion display
+    const SW = 9.7, W = [12.0, 15.0, 18.0, 21.0];
+    wOut([pw(svcP)[0], svcT[3], svcD[3], pw(svcP)[1]], SW, 0.05);
+    tl.set(svcP, { autoAlpha: 0 }, SW + 0.7)
+      .to(s, { turn: 4, duration: 2.0, ease: 'power2.inOut' }, SW)
+      .to(s, { dist: V.it[0], phi: IP[0], ty: TOP + IY[0], tz: R, duration: 2.1, ease: 'power3.inOut' }, SW + 0.1)
+      .to(s, { ...FR(-0.2, 0.17), duration: 2.1, ease: 'power3.inOut' }, SW + 0.1)
+      .to(s, { y: Mb ? 3.4 : 2.4, duration: 1.6, ease: 'power2.in' }, SW + 0.2)
+      .set(workP, { autoAlpha: 1 }, SW + 1.5)
+      .set(projs[0], { autoAlpha: 1 }, SW + 1.5);
+    wIn(pw(workP)[0], SW + 1.5); wIn(pl[0], SW + 1.7); wIn(pw(workP)[1], SW + 1.9);
+    tl.to(wseg[0], { scaleX: 1, duration: 0.6 }, SW + 1.8);
+
+    // WORK — dolly out, turn, dolly in; each showcase gets its own hold
+    tl.fromTo(s, { webScroll: 0 }, { webScroll: 1, duration: 2.0, immediateRender: false }, W[1] + 0.1)
+      .fromTo(s, { appScroll: 0 }, { appScroll: 1, duration: 2.0, immediateRender: false }, W[2] + 0.1)
+      .to(s, { theta: -0.42, duration: 2.2, ease: 'sine.inOut' }, W[3]);
+    for (let k = 0; k < 3; k++) {
+      const T = W[k] + 2.2;
+      wOut(pl[k], T);
+      tl.set(projs[k], { autoAlpha: 0 }, T + 0.5).set(projs[k + 1], { autoAlpha: 1 }, T + 0.5);
+      wIn(pl[k + 1], T + 0.45);
+      tl.to(q('[data-counter]'), { yPercent: -25 * (k + 1), duration: 0.5, ease: 'power3.inOut' }, T + 0.3)
+        .to(wseg[k + 1], { scaleX: 1, duration: 0.8 }, T)
+        .to(s, { turn: 5 + k, duration: 0.8, ease: 'power2.inOut' }, T)
+        .to(s, { dist: () => Math.max(V.it[k](), V.it[k + 1]()) * 1.4, duration: 0.4, ease: 'sine.out' }, T)
+        .to(s, { dist: V.it[k + 1], duration: 0.4, ease: 'sine.in' }, T + 0.4)
+        .to(s, { ty: TOP + IY[k + 1], phi: IP[k + 1], duration: 0.8, ease: 'power2.inOut' }, T);
+      if (k + 1 === 3) tl.to(s, { theta: 0.42, duration: 0.8, ease: 'power2.inOut' }, T);
+    }
+
+    // WORK → PROCESS — showcases sink into the table; camera rises overhead; the mark drops into the centre
+    const WP = 23.2;
+    wOut([pw(workP)[0], ...pl[3], pw(workP)[1]], WP, 0.04);
+    tl.set(workP, { autoAlpha: 0 }, WP + 0.7);
+    [3, 0, 2, 1].forEach((k, i) => tl.to(s, { ['rise' + k]: 0, duration: 0.9, ease: 'power2.in' }, WP + 0.1 + i * 0.12));
+    tl.to(s, { dist: V.proc, phi: 1.12, theta: 0, ty: TOP, tz: 0, duration: 2.2, ease: 'power3.inOut' }, WP + 0.2)
+      .to(s, { ...FR(-0.2, 0.15), duration: 2.2, ease: 'power3.inOut' }, WP + 0.2)
+      .to(s, { y: TOP + 0.12, rotX: -Math.PI / 2, scale: 0.42, duration: 1.8, ease: 'power2.inOut' }, WP + 0.5)
+      .to(s, { spot: 0.6, duration: 1 }, WP + 0.5)
+      .to(s, { play: 0, duration: 0.3 }, WP + 1.0)
+      .to(s, { bead: 1, duration: 0.5, ease: 'back.out(2)' }, WP + 1.7)
+      .set(procP, { autoAlpha: 1 }, WP + 1.6);
+    wIn(pw(procP).slice(0, 2), WP + 1.7, 0.12); vIn(sl[0], WP + 2.0); wIn(pw(procP)[2], WP + 2.1);
+    tl.to(stn[0], { color: '#111', duration: 0.3 }, WP + 2.1);
+
+    // PROCESS — the wheel turns under a fixed reading point; a trail records progress
+    const PS = [25.6, 27.2, 28.8, 30.4];
+    for (let k = 1; k < 4; k++) {
+      const at = PS[k] - 0.6;
+      tl.to(s, { prog: k, turn: 7 + k, duration: 0.6, ease: 'power2.inOut' }, at);
+      vOut(sl[k - 1], at); vIn(sl[k], at + 0.3);
+      tl.to(stn[k], { color: '#111', duration: 0.3 }, at + 0.3).to(stn[k - 1], { color: '#8a857d', duration: 0.3 }, at + 0.3);
+    }
+
+    // PROCESS → CONTACT — the loop closes; the ring stands up into a halo around the mark
+    const PC = 31.4;
+    vOut(sl[3], PC); wOut(pw(procP), PC, 0.05);
+    tl.set(procP, { autoAlpha: 0 }, PC + 0.6)
+      .to(s, { prog: 4, turn: 11, duration: 1.4, ease: 'power2.inOut' }, PC)
+      .to(s, { rimTilt: Math.PI / 2, rimDY: -TOP, rimZ: -0.25, rimScale: 0.5, duration: 2.0, ease: 'power3.inOut' }, PC + 0.3)
+      .to(s, { disc: 0, duration: 1.2 }, PC + 0.3)
+      .to(s, { y: 0, rotX: 0, scale: 0.52, duration: 2.0, ease: 'power3.inOut' }, PC + 0.3)
+      .to(s, { dist: V.end, phi: 0, ty: 0, tz: 0, duration: 2.0, ease: 'power3.inOut' }, PC + 0.3)
+      .to(s, { ...FR(0.2, 0.2), duration: 2.0, ease: 'power3.inOut' }, PC + 0.3)
+      .to(s, { spot: 0, duration: 1 }, PC + 0.5)
+      .to(q('[data-l="bgBlack"]'), { opacity: 1, duration: 1.2 }, PC + 0.6)
+      .set(conP, { autoAlpha: 1 }, PC + 1.6);
+    wIn(pw(conP)[0], PC + 1.7); wIn(cl, PC + 1.8, 0.12); wIn(pw(conP).slice(1), PC + 2.2, 0.12);
+    // dark chapter backdrop + linking layers
+    tl.to(q('[data-l="bgGraph"]'), { opacity: 1, duration: 1.2 }, SW + 0.6).to(q('[data-l="bgGraph"]'), { opacity: 0, duration: 1.2 }, WP + 0.2);
+    const gw = qa('[data-gw]'), GR = [[2.6, SW + 0.8], [SW + 1.2, WP], [WP + 1.4, PC + 0.4]];
+    g.set(gw, { x: '100vw', opacity: 0 });
+    gw.forEach((el, i) => { const [a, b] = GR[i];
+      tl.set(el, { opacity: 0.14 }, a).fromTo(el, { x: '100vw' }, { x: '-150vw', duration: b - a, ease: 'none', immediateRender: false }, a).set(el, { opacity: 0 }, b); });
+    tl.fromTo(q('[data-rail-fill]'), { scaleY: 0 }, { scaleY: 1, duration: TOTAL, ease: 'none' }, 0);
+    const hf = qa('[data-hf]'), hfIn = qa('[data-hf-in]');
+    if (Mb) { g.set([...hf, q('[data-rail]')], { display: 'none' }); }
+    else {
+      g.from(hfIn, { opacity: 0, y: 50, rotation: 3, duration: 1.2, stagger: 0.12, delay: 0.5, ease: 'power3.out' });
+      [['-22vw', '-12vh', -14, 1.5, 0.05], ['24vw', '10vh', 10, 1.35, 0.15], ['6vw', '-34vh', 7, 1.7, 0.1]].forEach(([x, y, r, sc, at], i) =>
+        tl.to(hf[i], { x, y, rotation: r, scale: sc, opacity: 0, duration: 1.5, ease: 'power2.in' }, at));
+    }
+    const cards = qa('[data-card]'), dring = q('[data-dring]');
+    if (cards.length) {
+      const Wd = window.innerWidth, Hd = window.innerHeight, cw = Mb ? 0.74 * Wd : 0.38 * Wd, rs = Mb ? 0.72 : 1;
+      const P = Mb ? { sx: 0.5, sy: 0.3, wx: 0.5, wy: 0.3, rx: 0.5, ry: 0.34, ex: 0.5, ey: 0.3 } : { sx: 0.73, sy: 0.47, wx: 0.31, wy: 0.5, rx: 0.3, ry: 0.52, ex: 0.7, ey: 0.48 };
+      cards.forEach((c, i) => { c.style.zIndex = 10 - i; });
+      const u = Mb ? Math.min(0.27 * Hd, (0.5 * Wd) / 1.5) : 0.5 * Hd, dims = [[1, 1], [1.5, 0.95], [0.5, 1], [0.8, 1]];
+      cards.forEach((c, i) => g.set(c, { width: dims[i][0] * u, height: dims[i][1] * u, xPercent: -50, yPercent: -50, x: Wd * 1.2, y: P.sy * Hd, autoAlpha: 0, transformPerspective: 1400 }));
+      g.set(dring, { x: P.rx * Wd, y: P.ry * Hd, scale: rs, autoAlpha: 0 });
+      const svcPose = (i, a) => { const d = i - a; return d < 0 ? { x: P.sx * Wd - 0.12 * Wd, y: P.sy * Hd, scale: 0.75, rotationY: 38, rotation: 0, autoAlpha: 0 } : { x: P.sx * Wd + d * (Mb ? 0.05 : 0.09) * Wd, y: P.sy * Hd + d * 0.035 * Hd, scale: 1 - d * 0.13, rotationY: d ? -16 : -6, rotation: 0, autoAlpha: d ? 0.6 : 1 }; };
+      const workPose = (i, a) => { const d = i - a, k = Mb ? 1 : 1.32; return d < 0 ? { x: -0.45 * Wd, y: P.wy * Hd, scale: k * 1.1, rotationY: 0, rotation: -9, autoAlpha: 0 } : { x: P.wx * Wd + d * 0.03 * Wd, y: P.wy * Hd - d * 0.04 * Hd, scale: k * (1 - d * 0.07), rotationY: 0, rotation: 0, autoAlpha: d ? 0.5 : 1 }; };
+      const ringPose = (i, a) => { const an = ((i * 90 - 90 + a) * Math.PI) / 180, Rr = 0.25 * Hd * rs; return { x: P.rx * Wd + Math.cos(an) * Rr, y: P.ry * Hd + Math.sin(an) * Rr, scale: Mb ? 0.26 : 0.3, rotationY: 0, rotation: 0, autoAlpha: 1 }; };
+      const endPose = { x: P.ex * Wd, y: P.ey * Hd, scale: 0.04, rotationY: 0, rotation: 0, autoAlpha: 0 };
+      const go = (fn, k, at, dur, ease, st = 0.06) => cards.forEach((c, i) => tl.to(c, { ...fn(i, k), duration: dur, ease }, at + i * st));
+      cards.forEach((c, i) => tl.fromTo(c, { x: P.sx * Wd + 0.4 * Wd, y: P.sy * Hd + 0.12 * Hd, rotationY: -50, scale: 0.7, autoAlpha: 0 }, { ...svcPose(i, 0), duration: 1.3, ease: 'power3.out', immediateRender: false }, 2.5 + i * 0.14));
+      for (let k = 1; k < 4; k++) go(svcPose, k, SV[k] - 0.7, 0.9, 'power2.inOut', 0.03);
+      go(workPose, 0, SW + 0.1, 1.9, 'power3.inOut', 0.07);
+      for (let k = 0; k < 3; k++) go(workPose, k + 1, W[k] + 2.2, 1.0, 'power3.inOut', 0.03);
+      go(ringPose, 0, WP + 0.2, 1.8, 'power3.inOut', 0.08);
+      const ring = { a: 0 };
+      tl.fromTo(dring, { autoAlpha: 0, scale: rs * 0.6 }, { autoAlpha: 0.6, scale: rs, duration: 0.9, ease: 'power3.out', immediateRender: false }, WP + 0.9)
+        .fromTo(ring, { a: 0 }, { a: 360, duration: PC - (WP + 2.2), ease: 'none', immediateRender: false, onUpdate: () => { cards.forEach((c, i) => g.set(c, ringPose(i, ring.a))); g.set(dring, { rotation: ring.a }); } }, WP + 2.2);
+      cards.forEach((c, i) => tl.to(c, { ...endPose, duration: 1.4, ease: 'power3.in' }, PC + i * 0.08));
+      tl.to(dring, { x: P.ex * Wd, y: P.ey * Hd, scale: rs * 0.74, duration: 1.6, ease: 'power3.inOut' }, PC + 0.2);
+    }
+    const wrap = document.querySelector('[data-trav-wrap]');
+    if (wrap) {
+      const trav = wrap.querySelector('[data-trav]'), svg = wrap.querySelector('svg'), full = svg.querySelector('[data-p-full]'), trail = svg.querySelector('[data-p-trail]');
+      const Wd = window.innerWidth, Hd = window.innerHeight; svg.setAttribute('viewBox', '0 0 ' + Wd + ' ' + Hd);
+      const wp = Mb ? [[0.5, 0.5], [0.4, 0.46], [0.85, 0.16], [0.78, 0.13], [0.88, 0.2], [0.5, 0.34], [0.5, 0.3]] : [[0.5, 0.52], [0.4, 0.46], [0.86, 0.2], [0.82, 0.15], [0.6, 0.2], [0.3, 0.52], [0.7, 0.48]];
+      const pts = wp.map(([x, y]) => [x * Wd, y * Hd]);
+      const seg = (i) => { const p0 = pts[Math.max(i - 1, 0)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(i + 2, pts.length - 1)]; return [p1, [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6], p2]; };
+      let d = 'M' + pts[0][0] + ' ' + pts[0][1], acc = 0; const cum = [0], NS = 'http://www.w3.org/2000/svg';
+      for (let i = 0; i < pts.length - 1; i++) {
+        const [p, c1, c2, e] = seg(i), part = 'C' + c1[0] + ' ' + c1[1] + ' ' + c2[0] + ' ' + c2[1] + ' ' + e[0] + ' ' + e[1];
+        d += ' ' + part; const t = document.createElementNS(NS, 'path'); t.setAttribute('d', 'M' + p[0] + ' ' + p[1] + ' ' + part);
+        svg.appendChild(t); acc += t.getTotalLength(); svg.removeChild(t); cum.push(acc);
+      }
+      full.setAttribute('d', d); trail.setAttribute('d', d);
+      const L = full.getTotalLength() || acc; trail.style.strokeDasharray = L; trail.style.strokeDashoffset = L;
+      const times = [0, 1.85, 3.6, SW, SW + 2.2, WP + 1.6, PC + 1.4], sc = [1, 1.08, 0.3, 0.3, 0.3, 0.5, 0.62], o = { u: 0 };
+      const place = () => { const pt = full.getPointAtLength(o.u * L); g.set(trav, { x: pt.x, y: pt.y }); trail.style.strokeDashoffset = L * (1 - o.u); };
+      g.set(trav, { xPercent: -50, yPercent: -50, x: pts[0][0], y: pts[0][1], scale: 1 });
+      g.fromTo(wrap, { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.2, delay: 0.3 });
+      for (let i = 0; i < 6; i++) {
+        const dur = times[i + 1] - times[i];
+        tl.to(o, { u: cum[i + 1] / acc, duration: dur, ease: 'power2.inOut', onUpdate: place }, times[i]).to(trav, { scale: sc[i + 1], duration: dur, ease: 'power2.inOut' }, times[i]);
+      }
+      tl.to(trav, { rotation: -18, duration: 1.85, ease: 'power1.inOut' }, 0).to(trav, { rotation: 0, duration: 1.75, ease: 'power2.inOut' }, 1.85)
+        .to(trav, { rotation: 360, duration: PC - (WP + 2.2), ease: 'none' }, WP + 2.2);
+      const st1 = trav.querySelector('[data-st1]'), st2 = trav.querySelector('[data-st2]');
+      const split = (at, dur, amt) => {
+        const ax = 0.27 * amt, ay = 0.96 * amt, h = dur / 2;
+        tl.to(st1, { x: ax, y: -ay, duration: h, ease: 'power2.out' }, at).to(st2, { x: -ax, y: ay, duration: h, ease: 'power2.out' }, at)
+          .to(st1, { x: 0, y: 0, duration: h, ease: 'power3.inOut' }, at + h).to(st2, { x: 0, y: 0, duration: h, ease: 'power3.inOut' }, at + h);
+      };
+      split(0.2, 1.9, 120); split(SW + 0.1, 2.0, 150); split(PC + 0.2, 1.8, 110);
+      // shape morphing: the two stones deform into circles, slabs, pills and rings, then reform into the mark
+      const TOPP = [[150, 620], [150, 500, 220, 420, 330, 330], [480, 210, 650, 125, 830, 125], [980, 125, 1090, 230, 1090, 355], [1090, 440, 1040, 478, 930, 478], [760, 485, 640, 520, 520, 610], [420, 690, 360, 755, 260, 755], [190, 755, 150, 700, 150, 620]];
+      const BOTP = [[170, 865], [165, 815, 215, 797, 290, 790], [450, 775, 560, 720, 660, 625], [750, 550, 820, 520, 905, 520], [1050, 520, 1095, 620, 1095, 720], [1095, 850, 1030, 975, 950, 1060], [870, 1130, 770, 1142, 660, 1142], [510, 1142, 330, 1060, 230, 985], [195, 955, 172, 910, 170, 865]];
+      const flat = (P) => [...P[0], ...P.slice(1).flat()];
+      const ell = (n, cx, cy, rx, ry) => {
+        const ph = Math.PI, pt = (a) => [cx + rx * Math.cos(a), cy + ry * Math.sin(a)], dv = (a) => [-rx * Math.sin(a), ry * Math.cos(a)], da = (2 * Math.PI) / n, k = (4 / 3) * Math.tan(da / 4), out = [...pt(ph)];
+        for (let i = 0; i < n; i++) { const a0 = ph + i * da, a1 = a0 + da, p0 = pt(a0), p1 = pt(a1), t0 = dv(a0), t1 = dv(a1); out.push(p0[0] + k * t0[0], p0[1] + k * t0[1], p1[0] - k * t1[0], p1[1] - k * t1[1], p1[0], p1[1]); }
+        return out;
+      };
+      const toD = (a) => { let d = 'M' + a[0] + ' ' + a[1]; for (let i = 2; i < a.length; i += 6) d += 'C' + a.slice(i, i + 6).join(' '); return d + 'Z'; };
+      const SH = {
+        L: [flat(TOPP), flat(BOTP)],
+        A: [ell(7, 470, 633, 300, 300), ell(8, 790, 633, 300, 300)],
+        B: [ell(7, 622, 430, 480, 150), ell(8, 622, 850, 480, 150)],
+        C: [ell(7, 450, 633, 150, 470), ell(8, 800, 633, 150, 470)],
+        D: [ell(7, 622, 360, 240, 240), ell(8, 622, 830, 390, 300)],
+        R: [ell(7, 622, 633, 430, 430), ell(8, 622, 633, 290, 290)]
+      };
+      const keys = [[0.3, 'B', 1.3], [1.9, 'L', 1.0], [2.9, 'A', 0.9], [SV[1] - 0.7, 'B', 0.9], [SV[2] - 0.7, 'C', 0.9], [SV[3] - 0.7, 'D', 0.9], [SW + 0.1, 'L', 1.8], [W[1] + 0.4, 'B', 1.0], [W[2] + 0.4, 'C', 1.0], [W[3] + 0.4, 'D', 1.0], [WP + 0.3, 'R', 1.6], [PC + 0.1, 'L', 1.6]];
+      const mEase = g.parseEase('power3.inOut'), sg = trav.querySelector('[data-sg]');
+      this._morph = (t, ks = keys) => {
+        let i = -1; for (let k = 0; k < ks.length; k++) if (ks[k][0] <= t) i = k;
+        const cur = i < 0 ? 'L' : ks[i][1], prev = i <= 0 ? 'L' : ks[i - 1][1];
+        const e = i < 0 ? 1 : mEase(Math.min(1, (t - ks[i][0]) / ks[i][2])), from = SH[prev], to = SH[cur];
+        const SM = { L: 1, A: 1.3, B: 0.82, C: 1.12, D: 0.78, R: 1.5 }, bump = i < 0 ? 0 : (i % 2 ? -0.22 : 0.22) * Math.sin(Math.PI * e);
+        g.set(sg, { scale: (SM[prev] + (SM[cur] - SM[prev]) * e) * (1 + bump), svgOrigin: '622 633' });
+        st1.setAttribute('d', toD(from[0].map((v, j) => v + (to[0][j] - v) * e)));
+        st2.setAttribute('d', toD(from[1].map((v, j) => v + (to[1][j] - v) * e)));
+      };
+      this._morph(0);
+      const tint = (at, c1, c2, ln) => tl.to(st1, { fill: c1, duration: 1.2 }, at).to(st2, { fill: c2, duration: 1.2 }, at).to([trail], { stroke: ln, duration: 1.2 }, at);
+      tint(2.2, '#111', '#8d9196', '#111'); tint(SW + 0.6, '#F5F5F2', '#BFC3C7', '#F5F5F2'); tint(WP + 0.2, '#111', '#a7a198', '#111'); tint(PC + 0.6, '#111', '#8a857d', '#111');
+      tl.to(trav, { scale: '+=0.12', duration: 0.5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, W[1] + 0.9);
+      this._trEnd = { x: pts[6][0], y: pts[6][1], s: 0.62, r: 360 };
+    }
+    tl.to({}, { duration: 0.01 }, TOTAL);
+  }
+
+  buildFooter(g) {
+    const f = this.footerRef.current; if (!f) return;
+    const q = (x) => f.querySelector(x), qa = (x) => Array.from(f.querySelectorAll(x));
+    g.to(q('[data-m1]'), { xPercent: -25, duration: 28, ease: 'none', repeat: -1 });
+    g.fromTo(q('[data-m2]'), { xPercent: -50 }, { xPercent: 0, duration: 36, ease: 'none', repeat: -1 });
+    g.to(q('[data-bring]'), { rotation: 360, duration: 16, ease: 'none', repeat: -1 });
+    g.to(q('[data-forbit]'), { rotation: 360, duration: 7, ease: 'none', repeat: -1 });
+    g.to(q('[data-fring]'), { rotation: -360, scale: 1.06, duration: 14, ease: 'sine.inOut', repeat: -1, yoyo: true });
+    const msk = q('[data-msk]');
+    window.ScrollTrigger.create({ trigger: f, start: 'top bottom', end: 'bottom top', onUpdate: (st) => g.to(msk, { skewX: g.utils.clamp(-9, 9, st.getVelocity() / -220), duration: 0.35, ease: 'power2.out', overwrite: 'auto' }) });
+    const hh = qa('[data-fh]'), cols = qa('[data-fcol]'), letters = qa('[data-fl]'), badge = q('[data-badge]');
+    g.set(hh, { yPercent: 110 }); g.set(cols, { y: 40, autoAlpha: 0 }); g.set(letters, { yPercent: 115 }); g.set(q('[data-frule]'), { scaleX: 0 }); g.set(badge, { scale: 0, rotation: -40 });
+    g.timeline({ scrollTrigger: { trigger: f, start: 'top 70%', toggleActions: 'play none none reverse' }, defaults: { ease: 'power3.out' } })
+      .to(hh, { yPercent: 0, duration: 1.0, stagger: 0.12 }, 0)
+      .to(badge, { scale: 1, rotation: 0, duration: 1.1, ease: 'back.out(1.6)' }, 0.25)
+      .to(q('[data-frule]'), { scaleX: 1, duration: 1.2, ease: 'power2.inOut' }, 0.5)
+      .to(cols, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.09 }, 0.6);
+    g.timeline({ scrollTrigger: { trigger: q('[data-word]'), start: 'top 92%', toggleActions: 'play none none reverse' } })
+      .to(letters, { yPercent: 0, duration: 1.0, stagger: 0.05, ease: 'power4.out' }, 0);
+    if (!f._fx) {
+      f._fx = true;
+      letters.forEach((l) => l.addEventListener('pointerenter', () => g.fromTo(l, { yPercent: 0 }, { yPercent: -14, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.out', overwrite: 'auto' })));
+      badge.addEventListener('pointermove', (e) => { const r = badge.getBoundingClientRect(); g.to(badge, { x: (e.clientX - r.left - r.width / 2) * 0.25, y: (e.clientY - r.top - r.height / 2) * 0.25, duration: 0.4, ease: 'power2.out', overwrite: 'auto' }); });
+      badge.addEventListener('pointerleave', () => g.to(badge, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1,.4)', overwrite: 'auto' }));
+    }
+    const wrap = document.querySelector('[data-trav-wrap]'), end = this._trEnd, img = q('[data-fimg]');
+    if (wrap && end && img) {
+      const trav = wrap.querySelector('[data-trav]'), st1 = wrap.querySelector('[data-st1]'), st2 = wrap.querySelector('[data-st2]'), ease = g.parseEase('power2.inOut'), self0 = this;
+      const fk = [[0, 'A', 0.22], [0.28, 'D', 0.22], [0.54, 'B', 0.22], [0.78, 'L', 0.2]];
+      const abs = (el) => el.getBoundingClientRect().top + window.scrollY, ringW = q('[data-fring]').parentElement;
+      const upd = (st) => {
+        if (self0.state.webgl) { img.style.opacity = 1; return; }
+        const pr = st.progress, p = ease(pr), r = img.getBoundingClientRect(), W0 = window.innerWidth;
+        img.style.opacity = pr >= 1 ? 1 : 0; wrap.style.visibility = pr >= 1 ? 'hidden' : 'visible';
+        if (pr <= 0) { g.set(trav, { x: end.x, y: end.y, scale: end.s, rotation: end.r }); g.set([st1, st2], { x: 0, y: 0 }); self0._morph(1e4, [[0, 'L', 1]]); return; }
+        const tx = r.left + r.width / 2, ty = r.top + r.height / 2, ts = r.width / (0.34 * window.innerHeight);
+        const sw = Math.sin(pr * Math.PI * 3) * 0.07 * W0 * (1 - pr), amt = 120 * Math.abs(Math.sin(pr * Math.PI * 2.5)) * (1 - pr * 0.6);
+        g.set(trav, { x: end.x + (tx - end.x) * p + sw, y: end.y + (ty - end.y) * p, scale: (end.s + (ts - end.s) * p) * (1 + 0.35 * Math.sin(pr * Math.PI)), rotation: end.r + 720 * pr });
+        g.set(st1, { x: 0.27 * amt, y: -0.96 * amt }); g.set(st2, { x: -0.27 * amt, y: 0.96 * amt });
+        self0._morph(pr, fk);
+      };
+      img.style.opacity = 0;
+      window.ScrollTrigger.create({ start: () => abs(f) - window.innerHeight, end: () => abs(ringW) - window.innerHeight * 0.8, onUpdate: upd, onRefresh: upd });
+    }
+  }
+
+  scrollToY(y) {
+    if (this.lenis) this.lenis.scrollTo(y, { duration: 1.8 });
+    else window.scrollTo({ top: y, behavior: this.state.reduced ? 'auto' : 'smooth' });
+  }
+  goSection(name) {
+    this.setState({ menu: false });
+    const st = this.stageST;
+    if (st && this.labels[name] != null) return this.scrollToY(st.start + (st.end - st.start) * (this.labels[name] / this.TOTAL));
+    const el = document.getElementById(name === 'top' ? 'main' : name);
+    if (el) this.scrollToY(name === 'top' ? 0 : el.getBoundingClientRect().top + window.scrollY - 70);
+  }
+
+  renderVals() {
+    const D = window.STONE || { projects: [], services: [], process: [], contact: { socials: [] } };
+    const { mode, narrow, menu, webgl } = this.state, dk = !!this.state.dark || mode === 'flow' && this._flowDark;
+    const nav = (n) => (e) => { e.preventDefault(); this.goSection(n); };
+    return {
+      pillBg: dk ? 'rgba(22,22,22,.62)' : 'rgba(255,255,255,.74)', pillShadow: dk ? '0 10px 30px -10px rgba(0,0,0,.5)' : '0 10px 30px -12px rgba(17,17,17,.18)',
+      navItems: [['services', 'Services'], ['work', 'Work'], ['studio', 'Studio'], ['contact', 'Contact']].map(([k, l], i) => ({ label: l, href: '#' + k, go: nav(k), bg: this.state.chap === i ? (dk ? 'rgba(245,245,242,.18)' : 'rgba(17,17,17,.09)') : 'transparent', hover: dk ? 'rgba(245,245,242,.1)' : 'rgba(17,17,17,.05)' })),
+      hdrBg: dk ? 'rgba(17,17,17,.62)' : 'rgba(245,245,242,.78)', hdrFg: dk ? '#F5F5F2' : '#111', ctaFg: dk ? '#111' : '#F5F5F2', hdrLine: dk ? 'rgba(191,195,199,.16)' : 'rgba(17,17,17,.08)',
+      logoBlend: dk ? 'screen' : 'multiply', logoFilter: dk ? 'invert(1)' : 'none',
+      showMotionPrompt: mode === 'flow' && this.state.reduced && this.state.osReduced && this.props.motion !== 'reduced',
+      enableMotion: () => { this._forceMotion = true; window.scrollTo(0, 0); this.rebuild(); },
+      footerRef: this.footerRef, domDisplay: webgl ? 'none' : 'block', glErr: this.state.glErr || '',
+      isCinema: mode === 'cinema', isFlow: mode === 'flow', noWebgl: !webgl,
+      wideNav: !narrow, narrowNav: narrow, menuOpen: narrow && menu, menuOpenStr: String(!!menu), menuLabel: menu ? 'Close' : 'Menu',
+      toggleMenu: () => this.setState({ menu: !menu }),
+      goTop: nav('top'), goServices: nav('services'), goWork: nav('work'), goStudio: nav('studio'), goContact: nav('contact'),
+      stageRef: this.stageRef, canvasRef: this.canvasRef, flowCanvasRef: this.flowCanvasRef,
+      services: D.services, process: D.process,
+      projects: D.projects.map((p, i) => ({
+        ...p, roleText: (p.role || []).join(' · '), hasLink: !!p.url,
+        slot: 'work-0' + (i + 1), slotLabel: p.title + ' — key image (16:10)'
+      })),
+      email: D.contact.email, mailto: 'mailto:' + D.contact.email, emailPlaceholder: !!D.contact.emailPlaceholder,
+      socials: D.contact.socials
+    };
+  }
+}
+</script>
+</body>
+</html>
