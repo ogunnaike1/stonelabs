@@ -3,7 +3,7 @@ import SiteFooter from '@/components/SiteFooter';
 import PageMotion from '@/components/PageMotion';
 import { css } from '@/lib/css';
 
-const BG = 'radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #F8F7F4 50%, #EEEBE6 100%)';
+const BG = 'radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #FDFDFC 55%, #F8F8F6 100%)';
 export const LABEL = 'font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase';
 
 export default function PageShell({ active, children }: { active: string; children: React.ReactNode }) {

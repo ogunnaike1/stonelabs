@@ -1,6 +1,6 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -12,19 +12,6 @@ const STONE1 = 'M150 620C150 500 220 420 330 330C480 210 650 125 830 125C980 125
 const STONE2 = 'M170 865C165 815 215 797 290 790C450 775 560 720 660 625C750 550 820 520 905 520C1050 520 1095 620 1095 720C1095 850 1030 975 950 1060C870 1130 770 1142 660 1142C510 1142 330 1060 230 985C195 955 172 910 170 865Z';
 
 const Slot = ({ label, src }: { label: string; src?: string }) => (src ? <img src={src} alt="" className="img-fill" draggable={false} /> : <div className="img-slot">{label}</div>);
-const Dot = ({ c, s, m }: { c: string; s: number; m: string }) => <span style={{ display: 'inline-block', width: s, height: s, borderRadius: '50%', background: c, margin: m }} />;
-
-const OUTLINE = { color: 'transparent', WebkitTextStroke: '1px #111' } as const;
-const MARQ1 = [0, 1, 2, 3].map((i) => (
-  <span key={i} style={{ display: 'inline-flex', alignItems: 'center' }}>
-    <span>Motion</span><Dot c="#8a857d" s={10} m="0 .5em .12em" /><span style={OUTLINE}>Web</span><Dot c="#8a857d" s={10} m="0 .5em .12em" />
-    <span>Apps</span><Dot c="#8a857d" s={10} m="0 .5em .12em" /><span style={OUTLINE}>3D Visualization</span><Dot c="#8a857d" s={10} m="0 .5em .12em" />
-  </span>
-));
-const talk = (k: number) => ['Let’s talk', 'Say hello', 'Start a project'].map((t, i) => (
-  <Fragment key={`${k}-${i}`}>{t}<Dot c="#111" s={8} m="0 28px 2px" /></Fragment>
-));
-const MARQ2 = [0, 1].map((i) => <span key={i} style={{ display: 'inline-flex', alignItems: 'center' }}>{[0, 1, 2, 3, 4, 5].map((k) => talk(k))}</span>);
 
 const SECTION_LABEL = 'font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase';
 
@@ -181,9 +168,9 @@ export default function StoneSite() {
               </svg>
             </div>
             <section id="top" ref={stageRef} aria-label="Stone Labs" style={css('position:relative;height:100vh;overflow:hidden;background:#111;font-family:Satoshi,sans-serif')}>
-              <div data-l="bgLight" style={css('position:absolute;inset:0;background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #F8F7F4 50%, #EEEBE6 100%)')} />
-              <div data-l="bgGraph" style={css('position:absolute;inset:0;background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #F8F7F4 50%, #EEEBE6 100%);opacity:0')} />
-              <div data-l="bgBlack" style={css('position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 70% 45%, #F1EEE8 0%, #E2DED5 100%);opacity:0')} />
+              <div data-l="bgLight" style={css('position:absolute;inset:0;background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #FDFDFC 55%, #F8F8F6 100%)')} />
+              <div data-l="bgGraph" style={css('position:absolute;inset:0;background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #FDFDFC 55%, #F8F8F6 100%);opacity:0')} />
+              <div data-l="bgBlack" style={css('position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 70% 45%, #FDFDFC 0%, #F6F6F4 100%);opacity:0')} />
 
               <div aria-hidden="true" style={css('position:absolute;left:0;right:0;top:21vh;perspective:900px;perspective-origin:50% 40%;pointer-events:none')}>
                 <div data-l="word" style={css("display:flex;justify-content:center;font-family:'Clash Display',sans-serif;font-weight:300;font-size:15vw;line-height:.8;letter-spacing:-.01em;color:#292929;transform-style:preserve-3d;white-space:nowrap")}>
@@ -366,7 +353,7 @@ export default function StoneSite() {
                 </div>
               </div>
             </section>
-            <section id="services" aria-labelledby="f-svc" style={css('background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #F8F7F4 50%, #EEEBE6 100%);color:#111;padding:96px 6vw;font-family:Satoshi,sans-serif')}>
+            <section id="services" aria-labelledby="f-svc" style={css('background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #FDFDFC 55%, #F8F8F6 100%);color:#111;padding:96px 6vw;font-family:Satoshi,sans-serif')}>
               <h2 id="f-svc" style={css(`margin:0 0 36px;${SECTION_LABEL};color:#5b5852`)}>(01) Services</h2>
               <ul style={css('margin:0;padding:0;list-style:none;border-bottom:1px solid rgba(17,17,17,.14)')}>
                 {D.services.map((s) => (
@@ -380,7 +367,7 @@ export default function StoneSite() {
                 ))}
               </ul>
             </section>
-            <section id="work" aria-labelledby="f-work" style={css('background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #F8F7F4 50%, #EEEBE6 100%);color:#111;padding:40px 6vw 96px;font-family:Satoshi,sans-serif')}>
+            <section id="work" aria-labelledby="f-work" style={css('background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #FDFDFC 55%, #F8F8F6 100%);color:#111;padding:40px 6vw 96px;font-family:Satoshi,sans-serif')}>
               <h2 id="f-work" style={css(`margin:0 0 36px;${SECTION_LABEL};color:#5b5852`)}>(02) Selected Work</h2>
               <div style={css('display:flex;flex-direction:column;gap:72px')}>
                 {projects.map((p) => (
@@ -396,7 +383,7 @@ export default function StoneSite() {
                 ))}
               </div>
             </section>
-            <section id="studio" aria-labelledby="f-studio" style={css('background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #F8F7F4 50%, #EEEBE6 100%);color:#111;padding:40px 6vw 96px;font-family:Satoshi,sans-serif')}>
+            <section id="studio" aria-labelledby="f-studio" style={css('background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #FDFDFC 55%, #F8F8F6 100%);color:#111;padding:40px 6vw 96px;font-family:Satoshi,sans-serif')}>
               <h2 id="f-studio" style={css(`margin:0 0 24px;${SECTION_LABEL};color:#5b5852`)}>(03) Studio &amp; Process</h2>
               <p style={css("margin:0 0 40px;max-width:30ch;font:400 clamp(22px,2.4vw,36px)/1.2 'Clash Display',sans-serif")}>An independent studio for motion, interfaces and space. Every project moves from first sketch to final build in one set of hands.</p>
               <ol style={css('margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px 4vw')}>
@@ -409,7 +396,7 @@ export default function StoneSite() {
                 ))}
               </ol>
             </section>
-            <section id="contact" aria-labelledby="f-contact" style={css('background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #F8F7F4 50%, #EEEBE6 100%);color:#111;padding:96px 6vw;font-family:Satoshi,sans-serif;display:flex;flex-wrap:wrap;gap:40px 6vw;align-items:flex-end;justify-content:space-between')}>
+            <section id="contact" aria-labelledby="f-contact" style={css('background:radial-gradient(ellipse 65% 85% at 50% 50%, #FFFFFF 0%, #FDFDFC 55%, #F8F8F6 100%);color:#111;padding:96px 6vw;font-family:Satoshi,sans-serif;display:flex;flex-wrap:wrap;gap:40px 6vw;align-items:flex-end;justify-content:space-between')}>
               <div style={css('display:flex;flex-direction:column;gap:28px;max-width:760px')}>
                 <h2 id="f-contact" style={css(`margin:0;${SECTION_LABEL};color:#5b5852`)}>(04) Contact</h2>
                 <p style={css("margin:0;font:500 clamp(44px,6.6vw,120px)/.93 'Clash Display',sans-serif;letter-spacing:-.025em")}>Let’s build something worth seeing.</p>
@@ -424,63 +411,44 @@ export default function StoneSite() {
         )}
       </main>
 
-      <footer ref={footerRef} style={css('position:relative;background:#F5F5F2;color:#111;overflow:hidden;font-family:Satoshi,sans-serif')}>
-        <div aria-hidden="true" style={css('overflow:hidden;border-top:1px solid rgba(17,17,17,.14);padding:22px 0')}>
-          <div data-msk><div data-m1 style={css("display:inline-flex;white-space:nowrap;font:300 clamp(40px,6.4vw,104px)/1 'Clash Display',sans-serif;letter-spacing:-.02em")}>{MARQ1}</div></div>
-        </div>
-        <div style={css('display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:40px 6vw;padding:12vh 6vw 10vh')}>
+      <footer ref={footerRef} style={css('position:relative;background:#FDFDFC;color:#111;overflow:hidden;font-family:Satoshi,sans-serif;border-top:1px solid rgba(17,17,17,.1)')}>
+        <div style={css('display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:40px 6vw;padding:14vh 6vw 9vh')}>
           <div style={css('display:flex;flex-direction:column;gap:28px')}>
-            <div data-fcol style={css(`${SECTION_LABEL};color:#4a4743`)}>(05) Say hello</div>
-            <p style={css("margin:0;font:500 clamp(44px,7.2vw,132px)/.94 'Clash Display',sans-serif;letter-spacing:-.03em")}>
+            <div data-fcol style={css(`${SECTION_LABEL};color:#8a857d`)}>(05) Say hello</div>
+            <p style={css("margin:0;font:500 clamp(40px,6.4vw,112px)/.96 'Clash Display',sans-serif;letter-spacing:-.03em")}>
               <span style={css('display:block;overflow:hidden;padding-bottom:.08em')}><span data-fh style={{ display: 'block' }}>Let’s make</span></span>
-              <span style={css('display:block;overflow:hidden;padding-bottom:.08em')}><span data-fh style={{ display: 'block', color: '#4a4743' }}>something move.</span></span>
+              <span style={css('display:block;overflow:hidden;padding-bottom:.08em')}><span data-fh style={{ display: 'block', color: '#8a857d' }}>something move.</span></span>
             </p>
           </div>
-          <a data-badge href={mailto} aria-label="Start a project — email us" style={css('position:relative;display:block;flex:none;width:clamp(150px,14vw,230px);aspect-ratio:1;border-radius:50%;background:#111;color:#F5F5F2')}>
-            <svg data-bring viewBox="0 0 200 200" aria-hidden="true" style={css('position:absolute;inset:0;width:100%;height:100%')}>
-              <defs><path id="fcirc" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0" /></defs>
-              <text fill="#F5F5F2" fontFamily="Satoshi, sans-serif" fontWeight={500} fontSize={15} letterSpacing={2}><textPath href="#fcirc" textLength={470} lengthAdjust="spacing">START A PROJECT • START A PROJECT • START A PROJECT • </textPath></text>
-            </svg>
-            <span aria-hidden="true" style={css('position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 clamp(36px,3.4vw,56px)/1 Satoshi,sans-serif')}>↗</span>
-          </a>
+          <a data-fcol href={mailto} className="btn-dark" style={css('display:inline-flex;align-items:center;gap:14px;height:56px;padding:0 28px;border-radius:999px;background:#111;color:#F5F5F2;font:500 16px/1 Satoshi,sans-serif')}>Start a project <span aria-hidden="true">→</span></a>
         </div>
-        <span data-frule aria-hidden="true" style={css('display:block;height:1px;margin:0 6vw;background:rgba(17,17,17,.22);transform-origin:left')} />
-        <div style={css('display:flex;flex-wrap:wrap;gap:44px 5vw;padding:7vh 6vw 9vh')}>
-          <div data-fcol style={css('flex:2 1 300px;display:flex;flex-direction:column;gap:18px;align-items:flex-start')}>
-            <div style={css('font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:10px')}>Email</div>
-            <a href={mailto} style={css("font:500 clamp(20px,2vw,32px)/1.1 'Clash Display',sans-serif;border-bottom:1px solid rgba(17,17,17,.4);padding-bottom:6px")}>{D.contact.email}</a>
-            <p style={css('margin:0;max-width:34ch;font:400 15px/1.55 Satoshi,sans-serif;color:#4a4743')}>Motion graphics, websites, mobile apps and 3D visualization — designed and built in one studio.</p>
+        <span data-frule aria-hidden="true" style={css('display:block;height:1px;margin:0 6vw;background:rgba(17,17,17,.14);transform-origin:left')} />
+        <div style={css('display:flex;flex-wrap:wrap;gap:44px 5vw;padding:7vh 6vw 8vh')}>
+          <div data-fcol style={css('flex:2 1 300px;display:flex;flex-direction:column;gap:20px;align-items:flex-start')}>
+            <div aria-hidden="true" style={css('position:relative;flex:none;width:84px;aspect-ratio:1')}>
+              <span data-fring style={css('position:absolute;inset:0;border:1px solid rgba(17,17,17,.3);border-radius:50%')} />
+              <span data-forbit style={css('position:absolute;inset:0')}><span style={css('position:absolute;left:50%;top:-4px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#111')} /></span>
+              <svg data-fimg viewBox="130 105 985 1055" style={css('position:absolute;left:25%;top:22.5%;width:50%;aspect-ratio:985/1055')}>
+                <path d={STONE1} style={{ fill: '#111' }} /><path d={STONE2} style={{ fill: '#8a857d' }} />
+              </svg>
+            </div>
+            <a href={mailto} style={css("font:500 clamp(18px,1.6vw,24px)/1.2 'Clash Display',sans-serif;border-bottom:1px solid rgba(17,17,17,.3);padding-bottom:4px")}>{D.contact.email}</a>
+            <p style={css('margin:0;max-width:34ch;font:400 14px/1.6 Satoshi,sans-serif;color:#5b5852')}>Motion graphics, websites, mobile apps and 3D visualization — designed and built in one studio.</p>
           </div>
-          <nav data-fcol aria-label="Footer" style={css('flex:1 1 140px;display:flex;flex-direction:column;gap:8px')}>
-            <div style={css('font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:10px')}>Navigate</div>
-            {navItems.map(([k, l]) => <a key={k} href={k !== 'top' ? '/' + k : '#' + k} onClick={k !== 'top' ? undefined : nav(k)} className="flink" style={css('display:inline-block;padding:6px 0;font:500 16px/1.3 Satoshi,sans-serif;color:#111')}>{l}</a>)}
+          <nav data-fcol aria-label="Footer" style={css('flex:1 1 140px;display:flex;flex-direction:column;gap:6px')}>
+            <div style={css('font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:12px')}>Navigate</div>
+            {navItems.map(([k, l]) => <a key={k} href={k !== 'top' ? '/' + k : '#' + k} onClick={k !== 'top' ? undefined : nav(k)} className="flink" style={css('align-self:flex-start;padding:4px 0;font:500 15px/1.3 Satoshi,sans-serif;color:#111')}>{l}</a>)}
           </nav>
-          <div data-fcol style={css('flex:1 1 140px;display:flex;flex-direction:column;gap:8px')}>
-            <div style={css('font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:10px')}>Services</div>
-            {D.services.map((sv) => <span key={sv.id} style={css('padding:6px 0;font:400 16px/1.3 Satoshi,sans-serif;color:#4a4743')}>{sv.name}</span>)}
+          <div data-fcol style={css('flex:1 1 140px;display:flex;flex-direction:column;gap:6px')}>
+            <div style={css('font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:12px')}>Services</div>
+            {D.services.map((sv) => <a key={sv.id} href={'/services#' + sv.id} className="flink" style={css('align-self:flex-start;padding:4px 0;font:400 15px/1.3 Satoshi,sans-serif;color:#5b5852')}>{sv.name}</a>)}
           </div>
-          <div data-fcol style={css('flex:1 1 140px;display:flex;flex-direction:column;gap:8px')}>
-            <div style={css('font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:10px')}>Elsewhere</div>
-            {D.contact.socials.map((so) => <a key={so.label} href={so.href} className="flink" style={css('display:inline-block;padding:6px 0;font:500 16px/1.3 Satoshi,sans-serif;color:#111')}>{so.label} ↗</a>)}
-          </div>
-        </div>
-        <div aria-hidden="true" style={css('overflow:hidden;background:#E4E0D8;color:#111;padding:14px 0;border-top:1px solid rgba(17,17,17,.1)')}>
-          <div data-m2 style={css('display:inline-flex;white-space:nowrap;font:500 clamp(13px,1.1vw,16px)/1 Satoshi,sans-serif;letter-spacing:.2em;text-transform:uppercase')}>{MARQ2}</div>
-        </div>
-        <div style={css('display:flex;align-items:flex-end;justify-content:space-between;gap:3vw;padding:6vh 6vw 3vh')}>
-          <div aria-hidden="true" data-word style={css("display:flex;min-width:0;overflow:hidden;padding-bottom:.1em;font:500 12vw/.82 'Clash Display',sans-serif;letter-spacing:-.04em;white-space:nowrap")}>
-            {'STONE'.split('').map((c, i) => <span key={i} data-fl style={{ display: 'inline-block', marginRight: i === 4 ? '.2em' : undefined }}>{c}</span>)}
-            {'LABS'.split('').map((c, i) => <span key={i} data-fl style={{ display: 'inline-block' }}>{c}</span>)}
-          </div>
-          <div aria-hidden="true" style={css('position:relative;flex:none;width:clamp(80px,9vw,150px);aspect-ratio:1;margin-bottom:1.5vw')}>
-            <span data-fring style={css('position:absolute;inset:0;border:1px solid rgba(17,17,17,.4);border-radius:50%')} />
-            <span data-forbit style={css('position:absolute;inset:0')}><span style={css('position:absolute;left:50%;top:-5px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#111')} /></span>
-            <svg data-fimg viewBox="130 105 985 1055" style={css('position:absolute;left:25%;top:22.5%;width:50%;aspect-ratio:985/1055')}>
-              <path d={STONE1} style={{ fill: '#111' }} /><path d={STONE2} style={{ fill: '#8a857d' }} />
-            </svg>
+          <div data-fcol style={css('flex:1 1 140px;display:flex;flex-direction:column;gap:6px')}>
+            <div style={css('font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a857d;padding-bottom:12px')}>Elsewhere</div>
+            {D.contact.socials.map((so) => <a key={so.label} href={so.href} className="flink" style={css('align-self:flex-start;padding:4px 0;font:500 15px/1.3 Satoshi,sans-serif;color:#111')}>{so.label} ↗</a>)}
           </div>
         </div>
-        <div style={css('display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:20px 6vw 28px;border-top:1px solid rgba(17,17,17,.14);font:400 13px/1.4 Satoshi,sans-serif;color:#4a4743')}>
+        <div style={css('display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:22px 6vw 28px;border-top:1px solid rgba(17,17,17,.1);font:400 13px/1.4 Satoshi,sans-serif;color:#5b5852')}>
           <span>© 2026 Stone Labs — Creative Digital Studio</span>
           {D.contact.emailPlaceholder && <span style={css('font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#8a857d')}>Placeholder email and projects — edit data/stone.ts</span>}
           <a href="#top" onClick={goTop}>Back to top ↑</a>

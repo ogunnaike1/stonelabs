@@ -238,27 +238,15 @@ export function buildCinema(g: G, root: HTMLElement, opts: { mobile: boolean; pa
 
 export function buildFooter(g: G, ST: any, f: HTMLElement, handle: CinemaHandle | null) {
   const q = (x: string) => f.querySelector(x) as HTMLElement, qa = (x: string) => Array.from(f.querySelectorAll(x)) as HTMLElement[];
-  g.to(q('[data-m1]'), { xPercent: -25, duration: 28, ease: 'none', repeat: -1 });
-  g.fromTo(q('[data-m2]'), { xPercent: -50 }, { xPercent: 0, duration: 36, ease: 'none', repeat: -1 });
-  g.to(q('[data-bring]'), { rotation: 360, duration: 16, ease: 'none', repeat: -1 });
   g.to(q('[data-forbit]'), { rotation: 360, duration: 7, ease: 'none', repeat: -1 });
   g.to(q('[data-fring]'), { rotation: -360, scale: 1.06, duration: 14, ease: 'sine.inOut', repeat: -1, yoyo: true });
-  const msk = q('[data-msk]');
-  ST.create({ trigger: f, start: 'top bottom', end: 'bottom top', onUpdate: (st: any) => g.to(msk, { skewX: g.utils.clamp(-9, 9, st.getVelocity() / -220), duration: 0.35, ease: 'power2.out', overwrite: 'auto' }) });
-  const hh = qa('[data-fh]'), cols = qa('[data-fcol]'), letters = qa('[data-fl]'), badge = q('[data-badge]');
-  g.set(hh, { yPercent: 110 }); g.set(cols, { y: 40, autoAlpha: 0 }); g.set(letters, { yPercent: 115 }); g.set(q('[data-frule]'), { scaleX: 0 }); g.set(badge, { scale: 0, rotation: -40 });
+  const hh = qa('[data-fh]'), cols = qa('[data-fcol]');
+  g.set(hh, { yPercent: 110 }); g.set(cols, { y: 28, autoAlpha: 0 }); g.set(q('[data-frule]'), { scaleX: 0 });
   g.timeline({ scrollTrigger: { trigger: f, start: 'top 70%', toggleActions: 'play none none reverse' }, defaults: { ease: 'power3.out' } })
     .to(hh, { yPercent: 0, duration: 1.0, stagger: 0.12 }, 0)
-    .to(badge, { scale: 1, rotation: 0, duration: 1.1, ease: 'back.out(1.6)' }, 0.25)
-    .to(q('[data-frule]'), { scaleX: 1, duration: 1.2, ease: 'power2.inOut' }, 0.5)
-    .to(cols, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.09 }, 0.6);
-  g.timeline({ scrollTrigger: { trigger: q('[data-word]'), start: 'top 92%', toggleActions: 'play none none reverse' } })
-    .to(letters, { yPercent: 0, duration: 1.0, stagger: 0.05, ease: 'power4.out' }, 0);
+    .to(q('[data-frule]'), { scaleX: 1, duration: 1.2, ease: 'power2.inOut' }, 0.4)
+    .to(cols, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.08 }, 0.3);
   const cleanups: Array<() => void> = [];
-  const on = (el: HTMLElement, ev: string, fn: any) => { el.addEventListener(ev, fn); cleanups.push(() => el.removeEventListener(ev, fn)); };
-  letters.forEach((l) => on(l, 'pointerenter', () => g.fromTo(l, { yPercent: 0 }, { yPercent: -14, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.out', overwrite: 'auto' })));
-  on(badge, 'pointermove', (e: PointerEvent) => { const r = badge.getBoundingClientRect(); g.to(badge, { x: (e.clientX - r.left - r.width / 2) * 0.25, y: (e.clientY - r.top - r.height / 2) * 0.25, duration: 0.4, ease: 'power2.out', overwrite: 'auto' }); });
-  on(badge, 'pointerleave', () => g.to(badge, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1,.4)', overwrite: 'auto' }));
 
   // footer handoff: travelling logo lands on the footer ring logo
   const wrap = document.querySelector('[data-trav-wrap]') as HTMLElement | null, end = handle && handle.trEnd, img = q('[data-fimg]');

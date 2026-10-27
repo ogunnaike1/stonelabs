@@ -4,6 +4,15 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Stone Labs — Creative Digital Studio',
   description: 'A studio for motion graphics, websites, mobile apps and 3D visualization.',
+  icons: { icon: [{ url: '/icon.png', type: 'image/png', sizes: '512x512' }], apple: [{ url: '/apple-icon.png', sizes: '180x180' }] },
+  openGraph: {
+    title: 'Stone Labs — Creative Digital Studio',
+    description: 'A studio for motion graphics, websites, mobile apps and 3D visualization.',
+    siteName: 'Stone Labs',
+    type: 'website',
+    images: [{ url: '/assets/logo.png', width: 1254, height: 1254, alt: 'Stone Labs logo' }],
+  },
+  twitter: { card: 'summary', title: 'Stone Labs — Creative Digital Studio', images: ['/assets/logo.png'] },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
