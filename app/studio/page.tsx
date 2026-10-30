@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import PageShell, { PageHero, LABEL } from '@/components/PageShell';
 import { STONE as D } from '@/data/stone';
 import { css } from '@/lib/css';
@@ -26,7 +26,7 @@ export default function StudioPage() {
 
       <section className="svc-row" data-row style={{ paddingTop: 0, borderTop: 0 }}>
         <Link href="/work/motion-graphics#stone-labs-film" className="svc-media" data-media style={{ aspectRatio: '16/10' }} aria-label="Watch the Stone Labs brand film">
-          <img src="/images/motion-01.jpg" alt="Stone Labs brand film" className="img-fill" />
+          <Image src="/images/motion-01.jpg" alt="Stone Labs brand film" fill priority sizes="(max-width:900px) 100vw, 50vw" style={{ objectFit: 'cover' }} />
         </Link>
         <div className="svc-copy" data-copy>
           <div style={css(`${LABEL};color:#5b5852`)}>Our approach</div>
@@ -84,7 +84,7 @@ export default function StudioPage() {
           {RECENT.map((p) => (
             <li key={p.id} data-step>
               <Link href={`/work/${D.services.find((s) => s.id === p.svc)!.slug}#${p.id}`} style={css('display:flex;flex-direction:column;gap:12px')}>
-                <span style={css('position:relative;display:block;aspect-ratio:16/10;overflow:hidden;background:#E4E0D8')}><img src={p.image} alt={p.title} className="img-fill" loading="lazy" /></span>
+                <span style={css('position:relative;display:block;aspect-ratio:16/10;overflow:hidden;background:#E4E0D8')}><Image src={p.image} alt={p.title} fill sizes="(max-width:700px) 100vw, 33vw" style={{ objectFit: 'cover' }} /></span>
                 <span style={css(`${LABEL};color:#5b5852`)}>{p.serviceLabel}</span>
                 <span style={css("font:500 24px/1.1 'Clash Display',sans-serif")}>{p.title}</span>
               </Link>

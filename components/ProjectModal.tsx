@@ -22,6 +22,7 @@ export default function ProjectModal() {
       if (!a || pathname === '/contact') return;       // the contact page already is the form
       e.preventDefault(); e.stopPropagation();
       opener.current = a; setService(a.dataset.service); setRun((n) => n + 1); setOpen(true);
+      window.dispatchEvent(new Event('sl:modal-open'));
     };
     document.addEventListener('click', onClick, true);
     return () => document.removeEventListener('click', onClick, true);

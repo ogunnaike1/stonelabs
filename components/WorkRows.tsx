@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+import Image from 'next/image';
 import WorkVideo from '@/components/WorkVideo';
 import { LABEL } from '@/components/PageShell';
 import { css } from '@/lib/css';
@@ -17,7 +17,7 @@ export default function WorkRows({ items, eagerFirst = 2 }: { items: WorkRow[]; 
           <div className="svc-media" data-media style={{ aspectRatio: '16/10' }}>
             {p.video
               ? <WorkVideo src={p.video} poster={p.image} title={p.title} vertical={p.vertical} />
-              : <img src={p.image} alt={`${p.title} — ${p.serviceLabel}`} className="img-fill" loading={i < eagerFirst ? 'eager' : 'lazy'} />}
+              : <Image src={p.image} alt={`${p.title} — ${p.serviceLabel}`} fill sizes="(max-width:900px) 100vw, 50vw" priority={i < eagerFirst} style={{ objectFit: 'cover' }} />}
           </div>
           <div className="svc-copy" data-copy>
             <div style={css(`${LABEL};color:#5b5852`)}>{String(i + 1).padStart(2, '0')} — {p.serviceLabel} · {p.year}</div>

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     description: 'A studio for motion graphics, websites, mobile apps and 3D visualization.',
     siteName: 'Stone Labs',
     type: 'website',
-    images: [{ url: '/assets/logo.png', width: 1254, height: 1254, alt: 'Stone Labs logo' }],
+    images: [{ url: '/assets/logo.png', width: 630, height: 630, alt: 'Stone Labs logo' }],
   },
   twitter: { card: 'summary', title: 'Stone Labs — Creative Digital Studio', images: ['/assets/logo.png'] },
 };
