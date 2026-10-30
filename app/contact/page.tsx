@@ -14,7 +14,7 @@ export default function ContactPage() {
     <PageShell active="Contact">
       <PageHero label="(04) Contact" title="Let’s build something worth seeing." intro="Tell us what you are making and where it needs to go. We reply to every enquiry." />
       <section data-fade style={css('display:flex;flex-wrap:wrap;gap:56px 6vw;padding:0 0 96px')}>
-        <ContactForm email={D.contact.email} />
+        <div style={css('flex:1 1 380px;max-width:640px;min-width:0')}><ContactForm email={D.contact.email} /></div>
         <aside style={css('flex:1 1 260px;display:flex;flex-direction:column;gap:36px')}>
           <div style={css('display:flex;flex-direction:column;gap:12px')}>
             <div style={css(`${LABEL};color:#8a857d`)}>Email</div>

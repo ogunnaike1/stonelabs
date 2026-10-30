@@ -1,31 +1,81 @@
 'use client';
 import { useState } from 'react';
-import { css } from '@/lib/css';
 
-const FIELD = 'width:100%;padding:16px 0;border:0;border-bottom:1px solid rgba(17,17,17,.3);background:transparent;color:#111;font:400 17px/1.4 Satoshi,sans-serif;outline-offset:4px;border-radius:0';
-const SERVICES = ['Motion Graphics', 'Web Development', 'Mobile App Development', '3D Visualization', 'Not sure yet'];
+const SERVICES = ['Websites', 'Mobile Apps', 'Motion Graphics', '3D Architectural Visuals', 'Not sure yet'];
 
-export default function ContactForm({ email }: { email: string }) {
-  const [sent, setSent] = useState(false);
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+type Status = 'idle' | 'sending' | 'sent' | 'fallback' | 'error';
+
+export default function ContactForm({ email, defaultService, autoFocus = false }: { email: string; defaultService?: string; autoFocus?: boolean }) {
+  const [status, setStatus] = useState<Status>('idle');
+  const [error, setError] = useState('');
+  const initial = SERVICES.find((x) => x.toLowerCase() === (defaultService || '').toLowerCase()) ?? SERVICES[0];
+
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
-    const body = `Name: ${f.get('name')}\nEmail: ${f.get('email')}\nService: ${f.get('service')}\n\n${f.get('message')}`;
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent('Project enquiry — ' + f.get('service'))}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    const form = e.currentTarget;
+    const f = new FormData(form);
+    const data = { name: f.get('name'), email: f.get('email'), service: f.get('service'), message: f.get('message'), company: f.get('company') };
+    setStatus('sending'); setError('');
+    try {
+      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (res.ok) { setStatus('sent'); form.reset(); return; }
+      const j = await res.json().catch(() => ({}));
+      if (res.status === 400) { setError(j.error || 'Please check the form and try again.'); setStatus('error'); return; }
+      throw new Error('send failed');
+    } catch {
+      // the server could not send it: open the visitor's email app with the message ready instead
+      const body = `Name: ${data.name}\nEmail: ${data.email}\nService: ${data.service}\n\n${data.message}`;
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent('Project enquiry — ' + data.service)}&body=${encodeURIComponent(body)}`;
+      setStatus('fallback');
+    }
   };
+
+  if (status === 'sent') {
+    return (
+      <div className="cf-done" role="status" aria-live="polite">
+        <span className="cf-tick" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></span>
+        <h3>Message sent</h3>
+        <p>Thank you. We have your details and will reply by email soon.</p>
+        <button type="button" className="cf-again" onClick={() => setStatus('idle')}>Send another message</button>
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={submit} style={css('display:flex;flex-direction:column;gap:18px;flex:1 1 380px;max-width:640px')}>
-      <label style={css('display:flex;flex-direction:column;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5b5852')}>Name
-        <input name="name" required autoComplete="name" style={css(FIELD)} /></label>
-      <label style={css('display:flex;flex-direction:column;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5b5852')}>Email
-        <input name="email" type="email" required autoComplete="email" style={css(FIELD)} /></label>
-      <label style={css('display:flex;flex-direction:column;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5b5852')}>Service
-        <select name="service" style={css(FIELD)}>{SERVICES.map((s) => <option key={s}>{s}</option>)}</select></label>
-      <label style={css('display:flex;flex-direction:column;font:500 12px/1.2 Satoshi,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5b5852')}>Tell us about the project
-        <textarea name="message" required rows={5} style={{ ...css(FIELD), resize: 'vertical' }} /></label>
-      <button type="submit" className="btn-dark" style={css('align-self:flex-start;height:56px;padding:0 26px;border:0;background:#111;color:#F5F5F2;font:500 16px/1 Satoshi,sans-serif;border-radius:2px;cursor:pointer')}>Send enquiry →</button>
-      {sent && <p role="status" style={css('margin:0;font:400 14px/1.5 Satoshi,sans-serif;color:#5b5852')}>Your email app should open with the message ready to send.</p>}
+    <form onSubmit={submit} className="cf">
+      <div className="cf-row">
+        <label className="cf-field">
+          <span className="cf-label">Your name</span>
+          <input className="cf-input" name="name" required maxLength={120} autoComplete="name" autoFocus={autoFocus} placeholder="Full name" />
+        </label>
+        <label className="cf-field">
+          <span className="cf-label">Email</span>
+          <input className="cf-input" name="email" type="email" required maxLength={200} autoComplete="email" placeholder="you@company.com" />
+        </label>
+      </div>
+      <fieldset className="cf-field cf-fieldset">
+        <legend className="cf-label">What do you need?</legend>
+        <div className="cf-chips">
+          {SERVICES.map((s) => (
+            <label key={s} className="cf-chip">
+              <input type="radio" name="service" value={s} defaultChecked={s === initial} />
+              <span>{s}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <label className="cf-field">
+        <span className="cf-label">About your project</span>
+        <textarea className="cf-input cf-area" name="message" required maxLength={5000} rows={4} placeholder="What are you making, and when do you need it?" />
+      </label>
+      <div aria-hidden="true" style={{ position: 'absolute', left: -9999, width: 1, height: 1, overflow: 'hidden' }}>
+        <label>Company<input name="company" tabIndex={-1} autoComplete="off" /></label>
+      </div>
+      <button type="submit" disabled={status === 'sending'} className="cf-submit">{status === 'sending' ? 'Sending…' : 'Send enquiry'}<span aria-hidden="true">→</span></button>
+      <p role="status" aria-live="polite" className={'cf-msg' + (status === 'error' ? ' cf-err' : '')}>
+        {status === 'fallback' && <>We could not send this automatically, so your email app should open with the message ready. You can also write to <a href={'mailto:' + email} className="flink">{email}</a>.</>}
+        {status === 'error' && error}
+      </p>
     </form>
   );
 }

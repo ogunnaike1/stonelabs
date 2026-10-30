@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import WhatsAppButton from '@/components/WhatsAppButton';
+import ProjectModal from '@/components/ProjectModal';
 
 export const metadata: Metadata = {
   title: 'Stone Labs — Creative Digital Studio',
@@ -23,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@300,400,500,600&f[]=satoshi@400,500,700&display=swap" />
       </head>
-      <body>{children}</body>
+      <body>{children}<WhatsAppButton /><ProjectModal /></body>
     </html>
   );
 }

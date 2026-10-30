@@ -21,7 +21,7 @@ export default function SiteHeader({ active }: { active: string }) {
             style={{ ...css('display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:999px;font:500 14px/1 Satoshi,sans-serif'), background: label === active ? 'rgba(17,17,17,.09)' : 'transparent', ['--hv' as string]: 'rgba(17,17,17,.05)' }}>{label}</Link>
         ))}
       </nav>
-      <Link href="/contact" className="cta-pill" style={css('pointer-events:auto;display:inline-flex;align-items:center;gap:14px;height:48px;padding:0 8px 0 22px;border-radius:999px;font:500 14px/1 Satoshi,sans-serif;white-space:nowrap;background:#111;color:#F5F5F2')}>
+      <Link href="/contact" data-start-project className="cta-pill" style={css('pointer-events:auto;display:inline-flex;align-items:center;gap:14px;height:48px;padding:0 8px 0 22px;border-radius:999px;font:500 14px/1 Satoshi,sans-serif;white-space:nowrap;background:#111;color:#F5F5F2')}>
         <span className="cta-long">Start a Project</span><span className="cta-short">Start</span> <span aria-hidden="true" style={css('display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;font-size:15px;background:#F5F5F2;color:#111')}>→</span>
       </Link>
       <button type="button" className="glass-pill sp-menu" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="sp-mnav" style={css('pointer-events:auto;height:48px;padding:0 18px;border-radius:999px;color:inherit;font:500 14px/1 Satoshi,sans-serif;cursor:pointer')}>{open ? 'Close' : 'Menu'}</button>
